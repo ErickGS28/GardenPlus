@@ -72,7 +72,7 @@ const SocialCard = ({ post, className = '' }) => {
 
   return (
     <div 
-      className={`group relative overflow-hidden rounded-2xl ${className}`}
+      className={`group relative overflow-hidden rounded-2xl h-full ${className}`}
     >
       <div className="absolute inset-0">
         {post.type !== 'text' && (
@@ -84,8 +84,8 @@ const SocialCard = ({ post, className = '' }) => {
             />
             {post.type === 'video' && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-black/50 p-4 rounded-full">
-                  <Play className="w-8 h-8 text-white" fill="currentColor" />
+                <div className="bg-black/50 p-3 sm:p-4 rounded-full">
+                  <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="currentColor" />
                 </div>
               </div>
             )}
@@ -94,19 +94,19 @@ const SocialCard = ({ post, className = '' }) => {
         <div className={`absolute inset-0 ${post.type === 'text' ? 'bg-gradient-to-br from-emerald-600 to-emerald-800' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
       </div>
 
-      <div className="relative h-full p-6 flex flex-col">
-        <div className="flex items-center justify-between mb-4">
+      <div className="relative h-full p-4 sm:p-6 flex flex-col">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <SocialIcon network={post.network} />
-          <span className="text-white/60 text-sm">
+          <span className="text-white/60 text-xs sm:text-sm">
             {formattedDate}
           </span>
         </div>
 
         <div className="mt-auto">
-          <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
             {post.title}
           </h3>
-          <p className="text-white/80 text-sm mb-4 line-clamp-3">
+          <p className="text-white/80 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
             {post.content}
           </p>
           <SocialStats post={post} />
@@ -118,46 +118,46 @@ const SocialCard = ({ post, className = '' }) => {
 
 const SocialFeed = () => {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-6 md:px-8 lg:px-12 max-w-7xl">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-emerald-900 mb-4">
+    <section className="py-10 sm:py-16 bg-gray-50">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-emerald-900 mb-3 sm:mb-4">
             Síguenos en Redes
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
             Mantente al día con nuestros últimos proyectos, consejos de jardinería y más en nuestras redes sociales.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-6 auto-rows-[280px]">
-          {/* Featured Instagram post - spans 8 columns and 2 rows */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-4 sm:gap-6 auto-rows-[250px] sm:auto-rows-[280px]">
+          {/* Featured Instagram post - spans 8 columns and 2 rows on larger screens */}
           <SocialCard 
             post={socialPosts[0]} 
-            className="md:col-span-6 md:row-span-2 lg:col-span-8 lg:row-span-2"
+            className="sm:col-span-2 sm:row-span-2 md:col-span-6 md:row-span-2 lg:col-span-8 lg:row-span-2"
           />
           
           {/* Twitter text post */}
           <SocialCard 
             post={socialPosts[1]}
-            className="lg:col-span-4"
+            className="sm:col-span-1 md:col-span-3 lg:col-span-4"
           />
           
           {/* Instagram video post */}
           <SocialCard 
             post={socialPosts[2]}
-            className="lg:col-span-4"
+            className="sm:col-span-1 md:col-span-3 lg:col-span-4"
           />
           
           {/* Wide Instagram post */}
           <SocialCard 
             post={socialPosts[3]} 
-            className="md:col-span-3 lg:col-span-5"
+            className="sm:col-span-1 md:col-span-3 lg:col-span-5"
           />
           
           {/* Twitter post with image */}
           <SocialCard 
             post={socialPosts[4]}
-            className="md:col-span-3 lg:col-span-7"
+            className="sm:col-span-1 md:col-span-3 lg:col-span-7"
           />
         </div>
       </div>

@@ -1,3 +1,72 @@
 @import "tailwindcss";
 
 /* All color variables have been removed as they are now used directly as hexadecimal values in the components */
+
+/* Animations for About page - Simplified for better performance */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { 
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from { 
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes expand {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s forwards;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.5s forwards;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.5s forwards;
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.5s forwards;
+}
+
+.animate-expand {
+  animation: expand 0.5s forwards;
+}
+
+/* Utility for logo rotation */
+.group-hover\:rotate-360:hover {
+  transform: rotate(360deg);
+}

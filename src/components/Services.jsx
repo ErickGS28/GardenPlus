@@ -1,42 +1,234 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { services } from '../data/services';
+import { createPortal } from 'react-dom';
 
-const ServicePopover = ({ service, isOpen, onClose }) => {
-  if (!isOpen) return null;
+const MediaGallery = ({ media }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const totalItems = media.length;
+
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalItems);
+  };
+
+  const goToPrevious = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + totalItems) % totalItems);
+  };
+
+  const goToIndex = (index) => {
+    setCurrentIndex(index);
+    if (media[index].type === 'video') {
+      setIsPlaying(false);
+    }
+  };
+
+  const handleVideoPlay = () => {
+    setIsPlaying(true);
+  };
+
+  const handleVideoPause = () => {
+    setIsPlaying(false);
+  };
+
+  // Previene que los clics en los controles cierren el popover
+  const handleControlClick = (e) => {
+    e.stopPropagation();
+  };
+
+  const currentItem = media[currentIndex];
 
   return (
+    <div className="relative h-64 md:h-80 overflow-hidden rounded-lg mb-6">
+      {/* Media display */}
+      <div className="w-full h-full transition-opacity duration-300">
+        {currentItem.type === 'image' ? (
+          <img 
+            src={currentItem.url} 
+            alt={currentItem.alt || 'Imagen de servicio'}
+            className="w-full h-full object-cover transition-opacity duration-300"
+          />
+        ) : (
+          <div className="relative w-full h-full">
+            <video 
+              src={currentItem.url} 
+              poster={currentItem.poster}
+              className="w-full h-full object-cover"
+              controls={isPlaying}
+              onPlay={handleVideoPlay}
+              onPause={handleVideoPause}
+            />
+            {!isPlaying && (
+              <div 
+                className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/20"
+                onClick={() => {
+                  const videoElement = document.querySelector('video');
+                  if (videoElement) {
+                    videoElement.play();
+                  }
+                }}
+              >
+                <div className="bg-black/50 p-3 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white w-6 h-6">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Navigation controls */}
+      {totalItems > 1 && (
+        <>
+          <button 
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md transition-all duration-200 cursor-pointer hover:scale-110"
+            onClick={(e) => {
+              handleControlClick(e);
+              goToPrevious();
+            }}
+            aria-label="Anterior"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-900">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button 
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md transition-all duration-200 cursor-pointer hover:scale-110"
+            onClick={(e) => {
+              handleControlClick(e);
+              goToNext();
+            }}
+            aria-label="Siguiente"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-900">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </>
+      )}
+
+      {/* Indicators */}
+      {totalItems > 1 && (
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+          {media.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-colors cursor-pointer ${
+                index === currentIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/80'
+              }`}
+              onClick={(e) => {
+                handleControlClick(e);
+                goToIndex(index);
+              }}
+              aria-label={`Ir a imagen ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Media type indicator */}
+      <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+        {currentIndex + 1}/{totalItems} • {currentItem.type === 'image' ? 'Imagen' : 'Video'}
+      </div>
+    </div>
+  );
+};
+
+const ServicePopover = ({ service, isOpen, onClose }) => {
+  const [isAnimating, setIsAnimating] = useState(false);
+  
+  useEffect(() => {
+    if (isOpen) {
+      setIsAnimating(true);
+      // Bloquear el scroll del body cuando el popover está abierto
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restaurar el scroll cuando se cierra
+      document.body.style.overflow = '';
+      
+      // Añadir un pequeño retraso antes de eliminar completamente el componente del DOM
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 300); // Debe coincidir con la duración de la transición
+      
+      return () => clearTimeout(timer);
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  // Si no está abierto y no está animando, no renderizar nada
+  if (!isOpen && !isAnimating) return null;
+
+  // Función para detener la propagación de eventos
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
+  // Crear el contenido del portal
+  const popoverContent = (
     <>
+      {/* Overlay */}
       <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        className={`fixed inset-0 bg-black/30 backdrop-blur-md z-40 transition-opacity duration-300 ${
+          isOpen ? 'opacity-100' : 'opacity-0'
+        }`}
         onClick={onClose}
+        style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
       />
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl p-6 z-50 w-11/12 max-w-2xl">
+      
+      {/* Popover */}
+      <div 
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl p-4 sm:p-6 z-50 w-11/12 max-w-2xl transition-all duration-300 ${
+          isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        }`}
+        onClick={stopPropagation}
+        style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
+      >
         <button 
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 z-50 bg-white/80 rounded-full p-1.5 hover:bg-white transition-colors cursor-pointer"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <div className="h-64 overflow-hidden rounded-lg mb-6">
-          <img 
-            src={service.image} 
-            alt={service.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <h3 className="text-2xl font-bold mb-4 text-emerald-900">{service.title}</h3>
-        <p className="text-gray-700 leading-relaxed mb-6">{service.extendedDescription}</p>
+        
+        {service.media && service.media.length > 0 ? (
+          <MediaGallery media={service.media} />
+        ) : (
+          <div className="h-64 overflow-hidden rounded-lg mb-6">
+            <img 
+              src={service.image} 
+              alt={service.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+        
+        <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-emerald-900">{service.title}</h3>
+        <p className="text-gray-700 leading-relaxed mb-6 text-sm sm:text-base">{service.extendedDescription}</p>
         <button 
-          onClick={onClose}
-          className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors cursor-pointer"
         >
           Cerrar
         </button>
       </div>
     </>
   );
+
+  // Usar createPortal para renderizar el popover fuera del árbol de componentes normal
+  return createPortal(popoverContent, document.body);
 };
 
 const ServiceCard = ({ service }) => {

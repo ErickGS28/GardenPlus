@@ -33,10 +33,10 @@ const Menu = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0 flex items-center group cursor-pointer">
             <div className="w-10 h-10 mr-2 overflow-hidden transition-transform duration-700 group-hover:rotate-360">
-              <img src={logo} alt="Garden Plus Logo" className="w-full h-full object-contain" />
+              <img src={logo} alt="Garden Plus Morelos Logo" className="w-full h-full object-contain" />
             </div>
             <Link to="/" className="text-white font-bold text-lg md:text-xl lg:text-2xl group-hover:scale-105 transition-transform">
-              Garden <span className="text-[#bef202]">Plus</span> <span className="text-white inline-block transition-transform duration-700">+</span>
+              Garden <span className="text-[#bef202]">Plus</span> Morelos <span className="text-white inline-block transition-transform duration-700">+</span>
             </Link>
           </div>
           

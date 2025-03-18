@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="container mx-auto px-4" data-component-name="Footer">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div className="mb-8 md:mb-0 px-30">
-            <h3 className="text-xl font-semibold mb-4 text-[#bef202]">Garden Plus</h3>
+            <h3 className="text-xl font-semibold mb-4 text-[#bef202]">Garden Plus Morelos</h3>
             <p className="mb-4">Transformando espacios verdes en experiencias extraordinarias.</p>
             <div className="flex justify-center md:justify-start space-x-4">
               <a href="#" className="text-garden-mint hover:text-[#bef202] transition-all duration-300 hover:scale-110">
@@ -43,13 +43,13 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><p className="mb-2">Calle Principal #123</p></li>
               <li><p className="mb-2">Ciudad, Estado CP</p></li>
-              <li><p className="mb-2">Teléfono: (123) 456-7890</p></li>
+              <li><p className="mb-2">Teléfono: +52 1 81 2541 0048</p></li>
               <li><p className="mb-2">Email: info@gardenplus.com</p></li>
             </ul>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-garden-mint/20 text-center">
-          <p>&copy; {currentYear} Garden Plus. Todos los derechos reservados.</p>
+          <p>&copy; {currentYear} Garden Plus Morelos. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

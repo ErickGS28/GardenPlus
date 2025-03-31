@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo1.png';
+import logo from '../assets/Logo.png';
 
 const Menu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +36,7 @@ const Menu = () => {
               <img src={logo} alt="Garden Plus Morelos Logo" className="w-full h-full object-contain" />
             </div>
             <Link to="/" className="text-white font-bold text-lg md:text-xl lg:text-2xl group-hover:scale-105 transition-transform">
-              Garden <span className="text-[#bef202]">Plus</span> Morelos <span className="text-white inline-block transition-transform duration-700">+</span>
+              Garden <span className="text-[#bef202]">Plus</span> Morelos
             </Link>
           </div>
           

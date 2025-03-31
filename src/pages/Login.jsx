@@ -1,23 +1,39 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../utils/api';
+import { Loader } from 'lucide-react';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Simple validation
-    if (!username || !password) {
-      setError('Por favor ingresa usuario y contraseña');
+    if (!email || !password) {
+      setError('Por favor ingresa email y contraseña');
       return;
     }
     
-    // For demo purposes, accept any login
-    navigate('/dashboard');
+    try {
+      setIsLoading(true);
+      setError('');
+      
+      // Call the login API
+      await login(email, password);
+      
+      // Redirect to dashboard on success
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Credenciales inválidas. Por favor intenta de nuevo.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,17 +49,19 @@ const Login = () => {
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-              Usuario
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
             </label>
             <input
-              id="username"
-              name="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              name="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425] focus:border-transparent"
-              placeholder="Ingresa tu usuario"
+              placeholder="Ingresa tu email"
+              disabled={isLoading}
+              required
             />
           </div>
           
@@ -59,6 +77,8 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425] focus:border-transparent"
               placeholder="Ingresa tu contraseña"
+              disabled={isLoading}
+              required
             />
           </div>
           
@@ -66,8 +86,16 @@ const Login = () => {
             <button
               type="submit"
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-[#1b676b] hover:bg-[#88c425] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#88c425] transition-colors duration-300"
+              disabled={isLoading}
             >
-              Ingresar
+              {isLoading ? (
+                <>
+                  <Loader className="w-5 h-5 mr-2 animate-spin" />
+                  <span>Iniciando sesión...</span>
+                </>
+              ) : (
+                'Ingresar'
+              )}
             </button>
           </div>
         </form>

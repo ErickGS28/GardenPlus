@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { services } from '../data/services';
 import { createPortal } from 'react-dom';
+import { getProducts } from '../utils/api';
+import { Loader } from 'lucide-react';
 
 const MediaGallery = ({ media }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -168,6 +169,14 @@ const ServicePopover = ({ service, isOpen, onClose }) => {
     e.stopPropagation();
   };
 
+  // Preparar multimedia para el servicio
+  const serviceMedia = service.multimedia ? service.multimedia.map(item => ({
+    type: item.tipo === 'imagen' ? 'image' : 'video',
+    url: item.url,
+    alt: service.name,
+    poster: item.tipo === 'video' ? item.url : undefined
+  })) : [];
+
   // Crear el contenido del portal
   const popoverContent = (
     <>
@@ -200,20 +209,16 @@ const ServicePopover = ({ service, isOpen, onClose }) => {
           </svg>
         </button>
         
-        {service.media && service.media.length > 0 ? (
-          <MediaGallery media={service.media} />
+        {serviceMedia.length > 0 ? (
+          <MediaGallery media={serviceMedia} />
         ) : (
-          <div className="h-64 overflow-hidden rounded-lg mb-6">
-            <img 
-              src={service.image} 
-              alt={service.title}
-              className="w-full h-full object-cover"
-            />
+          <div className="h-64 overflow-hidden rounded-lg mb-6 bg-gray-200 flex items-center justify-center">
+            <span className="text-gray-500">No hay imágenes disponibles</span>
           </div>
         )}
         
-        <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-emerald-900">{service.title}</h3>
-        <p className="text-gray-700 leading-relaxed mb-6 text-sm sm:text-base">{service.extendedDescription}</p>
+        <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-emerald-900">{service.name}</h3>
+        <p className="text-gray-700 leading-relaxed mb-6 text-sm sm:text-base">{service.description}</p>
         <button 
           onClick={(e) => {
             e.stopPropagation();
@@ -233,29 +238,28 @@ const ServicePopover = ({ service, isOpen, onClose }) => {
 
 const ServiceCard = ({ service }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  
+  // Obtener la primera imagen para la tarjeta
+  const getCardImage = () => {
+    if (service.multimedia && service.multimedia.length > 0) {
+      const firstImage = service.multimedia.find(item => item.tipo === 'imagen');
+      if (firstImage) return firstImage.url;
+    }
+    return 'https://via.placeholder.com/300x200?text=No+imagen';
+  };
 
   return (
     <>
       <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
         <div className="h-44 overflow-hidden">
-          {service.type === 'image' ? (
-            <img 
-              src={service.image} 
-              alt={service.title}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <video 
-              src={service.video} 
-              className="w-full h-full object-cover"
-              autoPlay 
-              muted 
-              loop
-            />
-          )}
+          <img 
+            src={getCardImage()} 
+            alt={service.name}
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="p-5">
-          <h3 className="text-xl font-semibold mb-3 text-emerald-800">{service.title}</h3>
+          <h3 className="text-xl font-semibold mb-3 text-emerald-800">{service.name}</h3>
           <p className="text-gray-600 leading-relaxed mb-4 text-sm">{service.description}</p>
           <button
             onClick={() => setIsPopoverOpen(true)}
@@ -275,6 +279,28 @@ const ServiceCard = ({ service }) => {
 };
 
 const Services = () => {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        setLoading(true);
+        const data = await getProducts();
+        setServices(data);
+        setError(null);
+      } catch (err) {
+        setError('Error al cargar los servicios. Por favor, intenta de nuevo.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadServices();
+  }, []);
+
   return (
     <section id="services" className="bg-gray-50 py-16 pt-24">
       <div className="container mx-auto px-6 md:px-8 lg:px-12 max-w-7xl">
@@ -282,11 +308,24 @@ const Services = () => {
         <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
           Descubre nuestra amplia gama de servicios diseñados para crear y mantener el jardín de tus sueños
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {services.map((service) => (
-            <ServiceCard key={service.id} service={service} />
-          ))}
-        </div>
+        
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader className="w-8 h-8 text-emerald-600 animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 max-w-2xl mx-auto text-center">
+            {error}
+          </div>
+        ) : services.length === 0 ? (
+          <p className="text-center text-gray-500">No hay servicios disponibles en este momento.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {services.map((service) => (
+              <ServiceCard key={service._id} service={service} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -204,7 +204,7 @@ const Banner = memo(() => {
       <PrevArrow />
       <NextArrow />
 
-      <style jsx>{`
+      <style>{`
         .animate-in {
           opacity: 1;
           transform: translateY(0);

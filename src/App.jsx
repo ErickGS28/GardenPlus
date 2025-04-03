@@ -24,7 +24,7 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
         <Footer />
-        <WhatsAppButton phoneNumber="521234567890" /> 
+        <WhatsAppButton phoneNumber="5218125410048" /> 
       </div>
     </BrowserRouter>
   );

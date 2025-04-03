@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, Loader, X } from 'lucide-react';
 import { getPosts } from '../utils/api';
+import { Loader, AlertCircle } from 'lucide-react';
+import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
 const SocialIcon = ({ network, className = '' }) => {
@@ -44,11 +45,12 @@ const SocialStats = ({ post }) => {
 const PostModal = ({ post, onClose }) => {
   if (!post) return null;
 
-  // Extraer el contenido iframe si existe
+  // Extract iframe content if it exists
   const getIframeContent = () => {
-    if (!post.description) return null;
+    if (post.iframe) return post.iframe;
+    if (!post.content) return null;
     
-    const iframeMatch = post.description.match(/<iframe[^>]*>[\s\S]*?<\/iframe>/);
+    const iframeMatch = post.content.match(/<iframe[^>]*>[\s\S]*?<\/iframe>/);
     return iframeMatch ? iframeMatch[0] : null;
   };
 
@@ -65,25 +67,25 @@ const PostModal = ({ post, onClose }) => {
         </button>
         
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{post.name}</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{post.title}</h2>
           
           {iframeContent ? (
             <div 
               className="w-full aspect-video mb-6 rounded-lg overflow-hidden"
               dangerouslySetInnerHTML={{ __html: iframeContent }}
             />
-          ) : post.preview ? (
+          ) : post.previewUrl ? (
             <img 
-              src={post.preview} 
-              alt={post.name}
+              src={post.previewUrl} 
+              alt={post.title}
               className="w-full aspect-video mb-6 rounded-lg object-cover"
             />
           ) : null}
           
           <div className="prose prose-sm max-w-none">
-            {post.description && (
+            {post.content && (
               <div dangerouslySetInnerHTML={{ 
-                __html: post.description.replace(iframeContent || '', '') 
+                __html: post.content.replace(iframeContent || '', '') 
               }} />
             )}
           </div>
@@ -95,17 +97,18 @@ const PostModal = ({ post, onClose }) => {
 };
 
 const SocialCard = ({ post, className = '', onClick }) => {
-  // Determinar el tipo de red social basado en el contenido
+  // Determine social network type based on content
   const determineNetwork = () => {
-    if (post.description && post.description.includes('instagram')) {
+    if (post.type) return post.type.toLowerCase();
+    if (post.content && post.content.includes('instagram')) {
       return 'instagram';
-    } else if (post.description && post.description.includes('twitter')) {
+    } else if (post.content && post.content.includes('twitter')) {
       return 'twitter';
     }
     return 'instagram'; // Default
   };
   
-  const network = post.network || determineNetwork();
+  const network = determineNetwork();
   
   const formattedDate = new Date().toLocaleDateString('es-ES', {
     year: 'numeric',
@@ -119,18 +122,18 @@ const SocialCard = ({ post, className = '', onClick }) => {
       onClick={onClick}
     >
       <div className="absolute inset-0">
-        {post.preview ? (
+        {post.previewUrl ? (
           <>
             <img 
-              src={post.preview} 
-              alt={post.name}
+              src={post.previewUrl} 
+              alt={post.title}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
           </>
         ) : (
           <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 h-full w-full"></div>
         )}
-        <div className={`absolute inset-0 ${!post.preview ? 'bg-gradient-to-br from-emerald-600 to-emerald-800' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
+        <div className={`absolute inset-0 ${!post.previewUrl ? 'bg-gradient-to-br from-emerald-600 to-emerald-800' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
       </div>
 
       <div className="relative h-full p-4 sm:p-6 flex flex-col">
@@ -143,10 +146,10 @@ const SocialCard = ({ post, className = '', onClick }) => {
 
         <div className="mt-auto">
           <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
-            {post.name}
+            {post.title}
           </h3>
           <p className="text-white/80 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
-            {post.description && post.description.replace(/<[^>]*>?/gm, '')}
+            {post.content && post.content.replace(/<[^>]*>?/gm, '')}
           </p>
           <div className="flex items-center justify-between">
             <SocialStats post={post} />
@@ -167,22 +170,58 @@ const SocialFeed = () => {
   const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
-    const loadPosts = async () => {
+    const fetchPosts = async () => {
       try {
         setLoading(true);
+        setError(null);
         const data = await getPosts();
         setPosts(data);
-        setError(null);
       } catch (err) {
-        setError('Error al cargar las publicaciones. Por favor, intenta de nuevo.');
-        console.error(err);
+        console.error('Error fetching posts:', err);
+        setError('No se pudieron cargar las publicaciones. Por favor, intenta de nuevo más tarde.');
       } finally {
         setLoading(false);
       }
     };
 
-    loadPosts();
+    fetchPosts();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 min-h-[300px]">
+        <Loader className="w-12 h-12 text-[#1b676b] animate-spin" />
+        <p className="mt-4 text-gray-600">Cargando publicaciones...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 min-h-[300px]">
+        <AlertCircle className="w-12 h-12 text-red-500" />
+        <p className="mt-4 text-red-600">{error}</p>
+      </div>
+    );
+  }
+
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 min-h-[300px]">
+        <p className="text-gray-600">No hay publicaciones disponibles en este momento.</p>
+      </div>
+    );
+  }
+
+  // Determine grid layout based on number of posts
+  const getGridClass = () => {
+    const count = posts.length;
+    if (count === 1) return 'grid-cols-1';
+    if (count === 2) return 'grid-cols-1 md:grid-cols-2';
+    if (count === 3) return 'grid-cols-1 md:grid-cols-3';
+    if (count === 4) return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
+    return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+  };
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
@@ -192,62 +231,30 @@ const SocialFeed = () => {
     setSelectedPost(null);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader className="w-8 h-8 text-[#1b676b] animate-spin" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-red-500 mb-4">{error}</p>
-      </div>
-    );
-  }
-
-  if (posts.length === 0) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-gray-500">No hay publicaciones disponibles.</p>
-      </div>
-    );
-  }
-
-  // Determinar el número de columnas basado en la cantidad de posts
-  const getGridCols = () => {
-    if (posts.length === 1) return 'grid-cols-1';
-    if (posts.length === 2) return 'grid-cols-1 md:grid-cols-2';
-    return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
-  };
-
   return (
-    <section className="py-12 md:py-16 lg:py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Nuestro Blog</h2>
-          <p className="text-gray-600">Mantente al día con nuestras últimas noticias y actualizaciones</p>
+    <section className="py-12 px-4 bg-gray-50">
+      <div className="container mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-[#1b676b]">Síguenos en Redes Sociales</h2>
+          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+            Mantente al día con nuestras últimas noticias, eventos y promociones a través de nuestras redes sociales.
+          </p>
         </div>
-        
-        <div className={`grid ${getGridCols()} gap-6`}>
+
+        <div className={`grid ${getGridClass()} gap-6`}>
           {posts.map((post) => (
             <SocialCard 
-              key={post._id} 
+              key={post.id} 
               post={post} 
               onClick={() => handlePostClick(post)}
             />
           ))}
         </div>
+        
+        {selectedPost && (
+          <PostModal post={selectedPost} onClose={closeModal} />
+        )}
       </div>
-
-      {selectedPost && (
-        <PostModal 
-          post={selectedPost}
-          onClose={closeModal}
-        />
-      )}
     </section>
   );
 };

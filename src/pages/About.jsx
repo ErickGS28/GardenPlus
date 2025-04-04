@@ -2,13 +2,13 @@ import React from "react";
 
 const About = () => {
   return (
-    <div className="min-h-screen pt-28 px-4 bg-gradient-to-b from-[#eafde6] to-[#e0f5d9] overflow-x-hidden">
+    <div className="min-h-screen pt-28 px-4 bg-gradient-to-b from-[#eafde6] to-[#e0f5d9]">
       <div className="max-w-6xl mx-auto">
         {/* Header with decorative elements */}
-        <div className="text-center mb-16 animate-fadeIn">
+        <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-4 text-emerald-900 relative inline-block">
             Nosotros
-            <div className="absolute -bottom-2 left-0 w-full h-1 bg-[#88c425] animate-expand"></div>
+            <div className="absolute -bottom-2 left-0 w-full h-1 bg-[#88c425]"></div>
           </h1>
           <p className="text-xl text-emerald-700 max-w-2xl mx-auto">
             Transformando espacios verdes en experiencias extraordinarias
@@ -18,11 +18,8 @@ const About = () => {
         {/* Main content with decorative elements */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
           {/* Left column - Our History */}
-          <div className="relative animate-slideInLeft h-full">
-            <div className="absolute -top-10 -left-10 w-20 h-20 rounded-full bg-[#88c425]/20 blur-xl z-0"></div>
-            <div className="absolute bottom-10 right-10 w-32 h-32 rounded-full bg-emerald-500/10 blur-xl z-0"></div>
-            
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 relative z-10 border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:translate-y-[-5px] h-full flex flex-col">
+          <div className="h-full">
+            <div className="bg-white rounded-2xl shadow-lg p-8 relative z-10 border border-emerald-100 h-full flex flex-col">
               <h2 className="text-3xl font-semibold mb-6 text-emerald-800 flex items-center">
                 <span className="w-8 h-8 rounded-full bg-[#88c425] flex items-center justify-center text-white mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -56,11 +53,8 @@ const About = () => {
           </div>
 
           {/* Right column - Our Mission */}
-          <div className="relative animate-slideInRight h-full">
-            <div className="absolute top-20 left-20 w-24 h-24 rounded-full bg-[#1b676b]/10 blur-xl z-0"></div>
-            <div className="absolute -bottom-5 -right-5 w-28 h-28 rounded-full bg-[#88c425]/15 blur-xl z-0"></div>
-            
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 relative z-10 border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:translate-y-[-5px] h-full flex flex-col">
+          <div className="h-full">
+            <div className="bg-white rounded-2xl shadow-lg p-8 relative z-10 border border-emerald-100 h-full flex flex-col">
               <h2 className="text-3xl font-semibold mb-6 text-emerald-800 flex items-center">
                 <span className="w-8 h-8 rounded-full bg-[#1b676b] flex items-center justify-center text-white mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -90,7 +84,7 @@ const About = () => {
         </div>
 
         {/* Values section */}
-        <div className="mb-20 animate-slideInUp">
+        <div className="mb-20">
           <h2 className="text-3xl font-bold text-center mb-12 text-emerald-900">Nuestros Valores</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -124,8 +118,7 @@ const About = () => {
             ].map((value, index) => (
               <div 
                 key={index}
-                className={`bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-emerald-50 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 hover:scale-105 animate-fadeIn`}
-                style={{ animationDelay: `${index * 0.2}s` }}
+                className="bg-white rounded-xl p-6 shadow-md border border-emerald-50 flex flex-col items-center text-center"
               >
                 <div className="text-[#1b676b] mb-4">{value.icon}</div>
                 <h3 className="text-xl font-semibold mb-3 text-emerald-800">{value.title}</h3>

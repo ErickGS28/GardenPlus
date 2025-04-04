@@ -3,6 +3,7 @@ import { getPosts } from '../utils/api';
 import { Loader, AlertCircle } from 'lucide-react';
 import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
+import '../Blog.css'; // Importar los estilos CSS
 
 const SocialIcon = ({ network, className = '' }) => {
   const icons = {
@@ -43,9 +44,41 @@ const SocialStats = ({ post }) => {
 };
 
 const PostModal = ({ post, onClose }) => {
-  if (!post) return null;
+  const [iframeKey, setIframeKey] = useState(Date.now());
 
-  // Extract iframe content if it exists
+  useEffect(() => {
+    // Bloquear el scroll del body cuando el modal está abierto
+    document.body.style.overflow = 'hidden';
+    
+    // Generar una nueva key cada vez que se abre el modal
+    setIframeKey(Date.now());
+    
+    // Si hay un iframe con un script de Twitter, necesitamos cargarlo
+    if (getIframeContent()) {
+      // Limpiar cualquier elemento de script previo para evitar duplicados
+      const existingScripts = document.querySelectorAll('script[data-twitter-script]');
+      existingScripts.forEach(script => script.remove());
+      
+      // Crear y añadir el nuevo script de Twitter
+      const script = document.createElement('script');
+      script.src = 'https://platform.twitter.com/widgets.js';
+      script.charset = 'utf-8';
+      script.async = true;
+      script.setAttribute('data-twitter-script', 'true');
+      script.onload = () => {
+        if (window.twttr) {
+          window.twttr.widgets.load();
+        }
+      };
+      document.body.appendChild(script);
+    }
+
+    // Limpiar cuando se cierre el modal
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [post]);
+
   const getIframeContent = () => {
     if (post.iframe) return post.iframe;
     if (!post.content) return null;
@@ -54,38 +87,54 @@ const PostModal = ({ post, onClose }) => {
     return iframeMatch ? iframeMatch[0] : null;
   };
 
-  const iframeContent = getIframeContent();
+  const handleClose = () => {
+    document.body.style.overflow = '';
+    onClose();
+  };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-      <div className="relative bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 modal-overlay" 
+      onClick={handleClose}
+    >
+      <div 
+        className="relative bg-white rounded-xl w-full max-w-4xl m-4 overflow-hidden flex flex-col modal-content"
+        style={{ maxHeight: '90vh' }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <button 
-          className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 z-10"
-          onClick={onClose}
+          className="absolute top-4 right-4 z-10 bg-white/20 backdrop-blur-sm text-gray-800 p-1.5 rounded-full hover:bg-white/40 transition-colors"
+          onClick={handleClose}
         >
           <X className="w-6 h-6" />
         </button>
         
-        <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{post.title}</h2>
+        <div className="p-4 sm:p-6 overflow-y-auto">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">{post.title}</h2>
           
-          {iframeContent ? (
-            <div 
-              className="w-full aspect-video mb-6 rounded-lg overflow-hidden"
-              dangerouslySetInnerHTML={{ __html: iframeContent }}
-            />
+          {getIframeContent() ? (
+            <div className="iframe-wrapper mb-6">
+              <div 
+                className="iframe-container" 
+                data-key={iframeKey}
+                dangerouslySetInnerHTML={{ __html: getIframeContent() }}
+              />
+            </div>
           ) : post.previewUrl ? (
-            <img 
-              src={post.previewUrl} 
-              alt={post.title}
-              className="w-full aspect-video mb-6 rounded-lg object-cover"
-            />
+            <div className="w-full flex justify-center mb-6">
+              <img 
+                src={post.previewUrl} 
+                alt={post.title}
+                className="max-w-full h-auto rounded-lg object-cover"
+                style={{ maxHeight: '50vh' }}
+              />
+            </div>
           ) : null}
           
           <div className="prose prose-sm max-w-none">
             {post.content && (
               <div dangerouslySetInnerHTML={{ 
-                __html: post.content.replace(iframeContent || '', '') 
+                __html: post.content.replace(getIframeContent() || '', '') 
               }} />
             )}
           </div>
@@ -109,16 +158,10 @@ const SocialCard = ({ post, className = '', onClick }) => {
   };
   
   const network = determineNetwork();
-  
-  const formattedDate = new Date().toLocaleDateString('es-ES', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
 
   return (
     <div 
-      className={`group relative overflow-hidden rounded-2xl h-full cursor-pointer ${className}`}
+      className={`group relative overflow-hidden rounded-2xl blog-card h-full cursor-pointer ${className}`}
       onClick={onClick}
     >
       <div className="absolute inset-0">
@@ -136,27 +179,21 @@ const SocialCard = ({ post, className = '', onClick }) => {
         <div className={`absolute inset-0 ${!post.previewUrl ? 'bg-gradient-to-br from-emerald-600 to-emerald-800' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
       </div>
 
-      <div className="relative h-full p-4 sm:p-6 flex flex-col">
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
+      <div className="relative h-full p-4 flex flex-col">
+        <div className="flex items-center mb-2">
           <SocialIcon network={network} />
-          <span className="text-white/60 text-xs sm:text-sm">
-            {formattedDate}
-          </span>
         </div>
 
         <div className="mt-auto">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
+          <h3 className="text-lg font-bold text-white mb-1">
             {post.title}
           </h3>
-          <p className="text-white/80 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
+          <p className="text-white/80 text-xs mb-3 line-clamp-2">
             {post.content && post.content.replace(/<[^>]*>?/gm, '')}
           </p>
-          <div className="flex items-center justify-between">
-            <SocialStats post={post} />
-            <button className="bg-white/20 hover:bg-white/30 text-white rounded-full p-1.5 transition-colors">
-              <Eye className="w-4 h-4" />
-            </button>
-          </div>
+          <button className="bg-white/20 hover:bg-white/30 text-white rounded-full p-1.5 transition-colors">
+            <Eye className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </div>
@@ -244,7 +281,7 @@ const SocialFeed = () => {
         <div className={`grid ${getGridClass()} gap-6`}>
           {posts.map((post) => (
             <SocialCard 
-              key={post.id} 
+              key={post.id || post.numericId || post._id || `post-${post.title}`} 
               post={post} 
               onClick={() => handlePostClick(post)}
             />

@@ -1,178 +1,81 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { getServices } from '../utils/api';
 import { Loader, AlertCircle, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
-
-// Media Gallery Component for displaying images and videos
-const MediaGallery = ({ media = [], onClose }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  if (!media || media.length === 0) return null;
-
-  const currentMedia = media[currentIndex];
-  const isVideo = currentMedia?.url?.includes('.mp4') || currentMedia?.url?.includes('.mov');
-
-  const handleNext = (e) => {
-    e.stopPropagation();
-    setCurrentIndex((prev) => (prev + 1) % media.length);
-  };
-
-  const handlePrev = (e) => {
-    e.stopPropagation();
-    setCurrentIndex((prev) => (prev - 1 + media.length) % media.length);
-  };
-
-  return (
-    <div className="relative w-full h-full">
-      {isVideo ? (
-        <video 
-          src={currentMedia.url} 
-          controls 
-          className="w-full h-full object-contain"
-        />
-      ) : (
-        <img 
-          src={currentMedia.url} 
-          alt={currentMedia.alt || 'Service media'} 
-          className="w-full h-full object-contain"
-        />
-      )}
-      
-      {media.length > 1 && (
-        <>
-          <button 
-            onClick={handlePrev}
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
-          >
-            &#10094;
-          </button>
-          <button 
-            onClick={handleNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
-          >
-            &#10095;
-          </button>
-          <div className="absolute bottom-4 left-0 right-0 text-center text-white text-sm">
-            {currentIndex + 1} / {media.length}
-          </div>
-        </>
-      )}
-      
-      <button 
-        onClick={onClose}
-        className="absolute top-2 right-2 bg-black/50 text-white p-2 rounded-full"
-      >
-        <X size={20} />
-      </button>
-    </div>
-  );
-};
+import MediaGallery from './MediaGallery';
+import '../Blog.css';
 
 // Service Popover Component
-const ServicePopover = ({ service, isOpen, onClose }) => {
-  const [showGallery, setShowGallery] = useState(false);
-  
+const ServicePopover = memo(({ service, isOpen, onClose }) => {
   if (!isOpen) return null;
   
-  const handleOpenGallery = (e) => {
-    e.stopPropagation();
-    setShowGallery(true);
-  };
-  
-  const handleCloseGallery = () => {
-    setShowGallery(false);
-  };
-  
   const hasMedia = service.multimedia && service.multimedia.length > 0;
-  const firstMedia = hasMedia ? service.multimedia[0] : null;
-  const isFirstMediaVideo = firstMedia?.url?.includes('.mp4') || firstMedia?.url?.includes('.mov');
+  
+  // Manejar el scroll del body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+  
+  // Función de cierre con limpieza adicional
+  const handleClose = () => {
+    document.body.style.overflow = '';
+    onClose();
+  };
   
   return createPortal(
     <div 
-      className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6 modal-overlay"
+      onClick={handleClose}
     >
       <div 
-        className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-white rounded-lg w-full max-w-sm shadow-xl flex flex-col modal-content service-popover overflow-hidden"
+        style={{ maxHeight: '80vh' }}
         onClick={(e) => e.stopPropagation()}
       >
-        {showGallery ? (
-          <div className="flex-1 bg-black flex items-center justify-center">
-            <MediaGallery 
-              media={service.multimedia} 
-              onClose={handleCloseGallery}
-            />
+        {/* Sección de imágenes - arriba (carousel) */}
+        <div className="w-full h-48 sm:h-56 bg-white flex-shrink-0">
+          {hasMedia ? (
+            <MediaGallery media={service.multimedia} onClose={null} />
+          ) : (
+            <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+              <p className="text-gray-500">No hay imágenes disponibles</p>
+            </div>
+          )}
+        </div>
+        
+        {/* Sección de información - abajo (card body) */}
+        <div className="p-4 overflow-y-auto w-full">
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="text-lg font-semibold text-gray-800 card-title">{service.name}</h3>
+            <button 
+              onClick={handleClose}
+              className="bg-gray-100 rounded-full p-1 flex-shrink-0 hover:bg-gray-200 transition-colors"
+            >
+              <X size={18} className="text-gray-700" />
+            </button>
           </div>
-        ) : (
-          <>
-            <div className="relative">
-              {hasMedia ? (
-                isFirstMediaVideo ? (
-                  <video 
-                    src={firstMedia.url} 
-                    className="w-full h-64 object-cover cursor-pointer"
-                    onClick={handleOpenGallery}
-                  />
-                ) : (
-                  <img 
-                    src={firstMedia.url} 
-                    alt={service.name} 
-                    className="w-full h-64 object-cover cursor-pointer"
-                    onClick={handleOpenGallery}
-                  />
-                )
-              ) : (
-                <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500">No hay imágenes disponibles</p>
-                </div>
-              )}
-              
-              <button 
-                onClick={onClose}
-                className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md"
-              >
-                <X size={24} className="text-gray-700" />
-              </button>
-              
-              {hasMedia && service.multimedia.length > 1 && (
-                <button
-                  onClick={handleOpenGallery}
-                  className="absolute bottom-2 right-2 bg-white text-gray-800 px-3 py-1 rounded-full text-sm shadow-md"
-                >
-                  Ver {service.multimedia.length} imágenes
-                </button>
-              )}
+          
+          <div className="prose max-w-none mb-2">
+            <p className="text-gray-600 whitespace-pre-line text-sm card-body">{service.description}</p>
+          </div>
+          
+          {service.category && (
+            <div className="mt-2 inline-block bg-[#88c425]/20 text-[#1b676b] px-3 py-1 rounded-full text-xs">
+              {service.category}
             </div>
-            
-            <div className="p-6 overflow-y-auto">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">{service.name}</h2>
-              
-              {service.price && (
-                <p className="text-lg font-semibold text-[#1b676b] mb-4">
-                  ${service.price.toLocaleString('es-MX')}
-                </p>
-              )}
-              
-              <div className="prose max-w-none">
-                <p className="text-gray-600 whitespace-pre-line">{service.description}</p>
-              </div>
-              
-              {service.category && (
-                <div className="mt-4 inline-block bg-[#88c425]/20 text-[#1b676b] px-3 py-1 rounded-full text-sm">
-                  {service.category}
-                </div>
-              )}
-            </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>,
     document.body
   );
-};
+});
 
 // Service Card Component
-const ServiceCard = ({ service }) => {
+const ServiceCard = memo(({ service }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   
   const openPopover = () => {
@@ -191,10 +94,10 @@ const ServiceCard = ({ service }) => {
   return (
     <>
       <div 
-        className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+        className="bg-[#ECFDF5] rounded-lg shadow-sm overflow-hidden transition-transform duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer h-full flex flex-col service-card"
         onClick={openPopover}
       >
-        <div className="aspect-video overflow-hidden">
+        <div className="aspect-video overflow-hidden h-40 sm:h-44 lg:h-36 xl:h-40 flex-shrink-0 service-card-image">
           <img 
             src={firstMedia} 
             alt={service.name} 
@@ -202,24 +105,16 @@ const ServiceCard = ({ service }) => {
           />
         </div>
         
-        <div className="p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">{service.name}</h3>
+        <div className="p-3 sm:p-4 flex-grow flex flex-col service-card-content">
+          <h3 className="text-base font-semibold text-gray-800 mb-1">{service.name}</h3>
           
-          <p className="text-gray-600 line-clamp-2 mb-4">
+          <p className="text-gray-600 text-sm line-clamp-2 mb-2 flex-grow">
             {service.description}
           </p>
           
-          <div className="flex items-center justify-between">
-            {service.price ? (
-              <span className="font-medium text-[#1b676b]">
-                ${service.price.toLocaleString('es-MX')}
-              </span>
-            ) : (
-              <span className="text-gray-500">Precio a consultar</span>
-            )}
-            
+          <div className="flex items-center justify-end text-sm mt-auto">
             {service.category && (
-              <span className="bg-[#88c425]/20 text-[#1b676b] px-3 py-1 rounded-full text-sm">
+              <span className="bg-[#88c425]/20 text-[#1b676b] px-2 py-0.5 rounded-full text-xs">
                 {service.category}
               </span>
             )}
@@ -234,7 +129,7 @@ const ServiceCard = ({ service }) => {
       />
     </>
   );
-};
+});
 
 // Main Services Component
 const Services = () => {
@@ -260,49 +155,43 @@ const Services = () => {
     fetchServices();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8 min-h-[300px]">
-        <Loader className="w-12 h-12 text-[#1b676b] animate-spin" />
-        <p className="mt-4 text-gray-600">Cargando servicios...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8 min-h-[300px]">
-        <AlertCircle className="w-12 h-12 text-red-500" />
-        <p className="mt-4 text-red-600">{error}</p>
-      </div>
-    );
-  }
-
-  if (!services || services.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8 min-h-[300px]">
-        <p className="text-gray-600">No hay servicios disponibles en este momento.</p>
-      </div>
-    );
-  }
-
   return (
-    <section className="py-12 px-4 bg-gray-50">
-      <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#1b676b]">Nuestros Servicios</h2>
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-            Ofrecemos una amplia gama de servicios de jardinería y paisajismo para satisfacer todas tus necesidades.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
-            <ServiceCard key={service.id} service={service} />
-          ))}
-        </div>
+    <div className="py-10 px-4 sm:px-6 md:px-8 lg:px-12 bg-white" id="services">
+      <div className="container mx-auto max-w-6xl">
+        <h2 className="text-2xl md:text-3xl font-bold text-center text-[#1b676b] mb-8 md:mb-12" data-component-name="Services">
+          Nuestros Servicios
+        </h2>
+        
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <Loader className="w-12 h-12 text-[#1b676b] animate-spin" />
+          </div>
+        )}
+        
+        {error && (
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-8 rounded">
+            <div className="flex">
+              <AlertCircle className="h-6 w-6 mr-2" />
+              <p>{error}</p>
+            </div>
+          </div>
+        )}
+        
+        {!loading && !error && (!services || services.length === 0) && (
+          <div className="text-center py-12 text-gray-500">
+            No hay servicios disponibles en este momento.
+          </div>
+        )}
+        
+        {!loading && !error && services && services.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+            {services.map((service) => (
+              <ServiceCard key={service.id || service.numericId || service._id || `service-${service.name}`} service={service} />
+            ))}
+          </div>
+        )}
       </div>
-    </section>
+    </div>
   );
 };
 

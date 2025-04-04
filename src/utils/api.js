@@ -240,6 +240,13 @@ export const addPost = async (postData) => {
       authorId: 1
     };
 
+    // Validar el campo type - parece que solo "instagram" es un valor válido
+    // Si no está definido o no es uno de los valores permitidos, usamos "instagram" por defecto
+    if (!data.type || data.type !== "instagram") {
+      console.log(`Corrigiendo tipo de post de "${data.type}" a "instagram"`);
+      data.type = "instagram";
+    }
+
     console.log('Enviando datos para crear post:', data);
 
     const response = await fetch(`${API_BASE_URL}/post`, {
@@ -278,6 +285,13 @@ export const updatePost = async (id, postData) => {
       authorId: 1
     };
 
+    // Validar el campo type - parece que solo "instagram" es un valor válido
+    if (!data.type || data.type !== "instagram") {
+      data.type = "instagram";
+    }
+
+    console.log(`Enviando datos para actualizar post ${id}:`, data);
+
     const response = await fetch(`${API_BASE_URL}/post/${id}`, {
       method: 'PATCH',
       headers: {
@@ -286,7 +300,18 @@ export const updatePost = async (id, postData) => {
       },
       body: JSON.stringify(data),
     });
-    return await response.json();
+    
+    console.log('Respuesta al actualizar post status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Error en la respuesta al actualizar post con id ${id}:`, errorText);
+      throw new Error(`Error al actualizar post: ${response.status} ${errorText}`);
+    }
+    
+    const responseData = await response.json();
+    console.log('Respuesta al actualizar post:', responseData);
+    return responseData;
   } catch (error) {
     console.error(`Error updating post with id ${id}:`, error);
     throw error;

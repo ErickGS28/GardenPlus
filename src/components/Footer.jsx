@@ -41,8 +41,8 @@ const Footer = () => {
           <div className="px-4">
             <h3 className="text-xl font-semibold mb-4 text-[#bef202]">Contacto</h3>
             <ul className="space-y-2">
-              <li><p className="mb-2">Calle Principal #123</p></li>
-              <li><p className="mb-2">Ciudad, Estado CP</p></li>
+              <li><p className="mb-2">Av. Emiliano Zapata 11, Miguel Hidalgo</p></li>
+              <li><p className="mb-2">Jiutepec, Mor. CP. 62556</p></li>
               <li><p className="mb-2">Teléfono: +52 1 81 2541 0048</p></li>
               <li><p className="mb-2">Email: info@gardenplus.com</p></li>
             </ul>

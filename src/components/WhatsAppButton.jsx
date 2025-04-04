@@ -1,29 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const WhatsAppButton = ({ phoneNumber }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [currentMessage, setCurrentMessage] = useState('');
+  const [animationState, setAnimationState] = useState('visible'); // 'visible', 'hiding', 'hidden', 'showing'
+  
+  const messages = [
+    '\u00a1Cont\u00e1ctanos ahora!',
+    '\u00bfNecesitas ayuda con tu jard\u00edn?',
+    'Sistemas de riego profesionales',
+    'Dise\u00f1o y mantenimiento de jardines',
+    'Presupuesto sin compromiso'
+  ];
+
+  useEffect(() => {
+    let currentIndex = 0;
+    setCurrentMessage(messages[currentIndex]);
+    
+    // Ciclo de animación: visible (1.5s) -> hiding (0.5s) -> hidden (0.2s) -> showing (0.5s) -> visible
+    // Duración total del ciclo: 2.7 segundos
+    
+    const animationCycle = () => {
+      // Fase 1: Mensaje visible por 1.5 segundos
+      setAnimationState('visible');
+      
+      setTimeout(() => {
+        // Fase 2: Ocultar mensaje (0.5 segundos de transición)
+        setAnimationState('hiding');
+        
+        setTimeout(() => {
+          // Fase 3: Mensaje oculto, cambiar al siguiente (0.2 segundos)
+          setAnimationState('hidden');
+          currentIndex = (currentIndex + 1) % messages.length;
+          setCurrentMessage(messages[currentIndex]);
+          
+          setTimeout(() => {
+            // Fase 4: Mostrar nuevo mensaje (0.5 segundos de transición)
+            setAnimationState('showing');
+            
+            // Volver al inicio del ciclo
+          }, 200);
+        }, 500);
+      }, 1500);
+    };
+    
+    // Iniciar el primer ciclo
+    animationCycle();
+    
+    // Configurar intervalo para ciclos subsecuentes (2.7 segundos por ciclo)
+    const interval = setInterval(animationCycle, 2700);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const handleClick = () => {
-    const message = encodeURIComponent('¡Hola! Me gustaría obtener más información sobre sus servicios.');
+    const message = encodeURIComponent('\u00a1Hola! Me gustar\u00eda obtener m\u00e1s informaci\u00f3n sobre sus servicios.');
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+  };
+
+  // Determinar las clases de CSS según el estado de animación
+  const getAnimationClasses = () => {
+    switch (animationState) {
+      case 'visible':
+        return 'opacity-100 scale-100';
+      case 'hiding':
+        return 'opacity-0 scale-95';
+      case 'hidden':
+        return 'opacity-0 scale-90';
+      case 'showing':
+        return 'opacity-100 scale-100';
+      default:
+        return 'opacity-100 scale-100';
+    }
   };
 
   return (
     <div 
       className="fixed right-6 bottom-6 z-50 flex items-center gap-3"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <div 
         className={`
           bg-white text-garden-teal px-4 py-2 rounded-full shadow-lg font-medium
           transform transition-all duration-300 origin-right
           flex items-center whitespace-nowrap
-          ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}
+          ${getAnimationClasses()}
         `}
         data-component-name="WhatsAppButton"
       >
-        ¡Contáctanos ahora!
+        {currentMessage}
       </div>
       <button
         onClick={handleClick}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircle, Edit, Trash2, Image, Loader, LogOut } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Image, Loader, LogOut, Instagram, Twitter, Facebook, Youtube } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { 
   getServices, addService, updateService, deleteService,
@@ -518,6 +518,67 @@ const ManageServices = () => {
   );
 };
 
+// Social Media Icon Component
+const SocialMediaIcon = ({ type }) => {
+  const getIconStyle = () => {
+    switch (type) {
+      case 'instagram':
+        return {
+          bg: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400',
+          icon: <Instagram className="w-4 h-4 text-white" />
+        };
+      case 'youtube':
+        return {
+          bg: 'bg-[#FF0000]',
+          icon: <Youtube className="w-4 h-4 text-white" />
+        };
+      case 'facebook':
+        return {
+          bg: 'bg-[#1877F2]',
+          icon: <Facebook className="w-4 h-4 text-white" />
+        };
+      case 'twitter':
+        return {
+          bg: 'bg-black',
+          icon: <Twitter className="w-4 h-4 text-white" />
+        };
+      case 'tiktok':
+        return {
+          bg: 'bg-black',
+          icon: (
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              className="w-4 h-4 text-white"
+            >
+              <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+            </svg>
+          )
+        };
+      default:
+        return {
+          bg: 'bg-gray-500',
+          icon: <Instagram className="w-4 h-4 text-white" />
+        };
+    }
+  };
+
+  const { bg, icon } = getIconStyle();
+
+  return (
+    <div className={`${bg} p-1.5 rounded-full flex items-center justify-center`}>
+      {icon}
+    </div>
+  );
+};
+
 // Post Management Component
 const ManagePosts = () => {
   const [posts, setPosts] = useState([]);
@@ -782,19 +843,22 @@ const ManagePosts = () => {
             <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
               Tipo de Red Social
             </label>
-            <select
-              id="type"
-              name="type"
-              value={newPost.type}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425]"
-            >
-              <option value="instagram">Instagram</option>
-              <option value="youtube">YouTube</option>
-              <option value="facebook">Facebook</option>
-              <option value="tiktok">TikTok</option>
-              <option value="twitter">Twitter (X)</option>
-            </select>
+            <div className="flex items-center space-x-3">
+              <SocialMediaIcon type={newPost.type} />
+              <select
+                id="type"
+                name="type"
+                value={newPost.type}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425]"
+              >
+                <option value="instagram">Instagram</option>
+                <option value="youtube">YouTube</option>
+                <option value="facebook">Facebook</option>
+                <option value="tiktok">TikTok</option>
+                <option value="twitter">Twitter (X)</option>
+              </select>
+            </div>
             <p className="text-xs text-gray-500 mt-1">Actualmente se admiten los tipos "instagram", "youtube", "facebook", "tiktok" y "twitter (X)"</p>
           </div>
           
@@ -922,15 +986,7 @@ const ManagePosts = () => {
                     <div className="flex items-center space-x-2 mb-2">
                       <h4 className="font-semibold text-[#1b676b]">{post.title}</h4>
                       {post.type && (
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
-                          post.type === 'instagram' ? 'bg-pink-100 text-pink-800' :
-                          post.type === 'youtube' ? 'bg-red-100 text-red-800' :
-                          post.type === 'facebook' ? 'bg-indigo-100 text-indigo-800' :
-                          post.type === 'tiktok' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {post.type}
-                        </span>
+                        <SocialMediaIcon type={post.type} />
                       )}
                     </div>
                     

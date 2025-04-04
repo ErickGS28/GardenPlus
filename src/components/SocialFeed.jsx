@@ -262,10 +262,10 @@ const SocialFeed = () => {
   const getGridClass = () => {
     const count = posts.length;
     if (count === 1) return 'grid-cols-1 max-w-md mx-auto';
-    if (count === 2) return 'grid-cols-1 md:grid-cols-2';
-    if (count === 3) return 'grid-cols-1 md:grid-cols-3';
-    if (count === 4) return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
-    return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+    if (count === 2) return 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto';
+    if (count === 3) return 'grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto';
+    if (count === 4) return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto';
+    return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto';
   };
 
   const handlePostClick = (post) => {
@@ -277,8 +277,8 @@ const SocialFeed = () => {
   };
 
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="container mx-auto">
+    <section className="py-16 px-6 sm:px-8 lg:px-12 bg-gray-50">
+      <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-[#1b676b]">Síguenos en Redes Sociales</h2>
           <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
@@ -286,12 +286,13 @@ const SocialFeed = () => {
           </p>
         </div>
 
-        <div className={`grid ${getGridClass()} gap-6 ${posts.length === 1 ? 'min-h-[300px] items-center' : ''}` }>
+        <div className={`grid ${getGridClass()} gap-8 ${posts.length === 1 ? 'min-h-[300px] items-center' : ''}` }>
           {posts.map((post) => (
             <SocialCard 
               key={post.id || post.numericId || post._id || `post-${post.title}`} 
               post={post} 
               onClick={() => handlePostClick(post)}
+              className="h-[280px]"
             />
           ))}
         </div>

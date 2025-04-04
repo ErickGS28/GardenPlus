@@ -47,12 +47,12 @@ const ServicePopover = memo(({ service, isOpen, onClose }) => {
       onClick={handleClose}
     >
       <div 
-        className="bg-white rounded-xl w-full max-w-md shadow-2xl flex flex-col overflow-hidden"
-        style={{ maxHeight: '85vh' }}
+        className="bg-white rounded-xl w-full max-w-2xl shadow-2xl flex flex-col overflow-hidden"
+        style={{ maxHeight: '90vh' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Media section */}
-        <div className="relative bg-gray-900 w-full" style={{ height: '240px' }}>
+        <div className="relative bg-gray-900 w-full" style={{ height: '350px' }}>
           {hasMedia ? (
             <>
               <img 
@@ -66,29 +66,29 @@ const ServicePopover = memo(({ service, isOpen, onClose }) => {
                 <div className="absolute inset-0 flex items-center justify-between px-3 pointer-events-none">
                   <button 
                     onClick={goToPreviousImage} 
-                    className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2 pointer-events-auto"
+                    className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2.5 pointer-events-auto"
                     aria-label="Imagen anterior"
                   >
-                    <ChevronLeft size={20} />
+                    <ChevronLeft size={24} />
                   </button>
                   <button 
                     onClick={goToNextImage} 
-                    className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2 pointer-events-auto"
+                    className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2.5 pointer-events-auto"
                     aria-label="Siguiente imagen"
                   >
-                    <ChevronRight size={20} />
+                    <ChevronRight size={24} />
                   </button>
                 </div>
               )}
               
               {/* Indicators */}
               {mediaItems.length > 1 && (
-                <div className="absolute bottom-3 left-0 right-0 flex justify-center">
-                  <div className="flex space-x-1.5 bg-black/50 rounded-full px-2 py-1">
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+                  <div className="flex space-x-2 bg-black/50 rounded-full px-3 py-1.5">
                     {mediaItems.map((_, idx) => (
                       <button
                         key={`indicator-${idx}`}
-                        className={`w-2 h-2 rounded-full ${idx === currentImageIndex ? 'bg-white' : 'bg-white/40'}`}
+                        className={`w-2.5 h-2.5 rounded-full ${idx === currentImageIndex ? 'bg-white' : 'bg-white/40'}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           setCurrentImageIndex(idx);
@@ -109,23 +109,23 @@ const ServicePopover = memo(({ service, isOpen, onClose }) => {
           {/* Close button */}
           <button 
             onClick={handleClose}
-            className="absolute top-3 right-3 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5"
+            className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
             aria-label="Cerrar"
           >
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
         
         {/* Content section */}
-        <div className="p-5 overflow-y-auto">
-          <h3 className="text-xl font-bold text-gray-800 mb-3">{service.name}</h3>
+        <div className="p-6 overflow-y-auto">
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">{service.name}</h3>
           
-          <div className="prose prose-sm max-w-none mb-4">
-            <p className="text-gray-600 whitespace-pre-line">{service.description}</p>
+          <div className="prose prose-base max-w-none mb-5">
+            <p className="text-gray-600 whitespace-pre-line text-base">{service.description}</p>
           </div>
           
           {service.category && (
-            <div className="mt-3 inline-block bg-[#88c425]/20 text-[#1b676b] px-3 py-1 rounded-full text-xs font-medium">
+            <div className="mt-4 inline-block bg-[#88c425]/20 text-[#1b676b] px-4 py-1.5 rounded-full text-sm font-medium">
               {service.category}
             </div>
           )}

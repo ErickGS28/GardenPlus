@@ -14,7 +14,7 @@ const getAuthHeaders = () => {
   };
 };
 
-// Authentication functions
+// Authentication functionsr
 export const login = async (email, password) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {

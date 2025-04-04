@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gardenplus.com.mx/sitemap.xml
+
+# Disallow admin routes
+Disallow: /login
+Disallow: /dashboard
+
+# Crawl delay
+Crawl-delay: 10

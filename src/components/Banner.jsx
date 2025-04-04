@@ -138,7 +138,7 @@ const Banner = memo(() => {
   );
 
   return (
-    <div className="relative h-screen overflow-hidden bg-[#1b676b]">
+    <div id="inicio" className="relative h-screen overflow-hidden bg-[#1b676b]">
       <Slider ref={setSliderRef} {...settings} className="h-full">
         {slides.map((slide, index) => (
           <div key={index} className="h-screen">

@@ -234,6 +234,45 @@ blockquote.twitter-tweet {
   overflow: hidden;
 }
 
+.service-popover .carousel {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.service-popover .carousel .carousel-item {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.service-popover .carousel .carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.service-popover .carousel .carousel-control-prev,
+.service-popover .carousel .carousel-control-next {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.service-popover .carousel .carousel-control-prev:hover,
+.service-popover .carousel .carousel-control-next:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
 @media (min-width: 768px) {
   .service-popover {
     flex-direction: row;
@@ -263,4 +302,4 @@ blockquote.twitter-tweet {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   margin-bottom: 1rem;
-} 
+}

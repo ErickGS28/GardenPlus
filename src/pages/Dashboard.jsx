@@ -171,6 +171,12 @@ const ManageServices = () => {
   };
 
   const handleEditService = (service) => {
+    // Hacer scroll al inicio de la página
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    
     setEditingService(service);
     setNewService({
       name: service.name,
@@ -648,6 +654,12 @@ const ManagePosts = () => {
   };
 
   const handleEditPost = (post) => {
+    // Hacer scroll al inicio de la página
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    
     setEditingPost(post);
     setNewPost({
       title: post.title,
@@ -778,8 +790,12 @@ const ManagePosts = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425]"
             >
               <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+              <option value="facebook">Facebook</option>
+              <option value="tiktok">TikTok</option>
+              <option value="twitter">Twitter (X)</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">Actualmente solo se admite el tipo "instagram"</p>
+            <p className="text-xs text-gray-500 mt-1">Actualmente se admiten los tipos "instagram", "youtube", "facebook", "tiktok" y "twitter (X)"</p>
           </div>
           
           <div>
@@ -908,8 +924,9 @@ const ManagePosts = () => {
                       {post.type && (
                         <span className={`text-xs px-2 py-0.5 rounded-full ${
                           post.type === 'instagram' ? 'bg-pink-100 text-pink-800' :
-                          post.type === 'twitter' ? 'bg-blue-100 text-blue-800' :
+                          post.type === 'youtube' ? 'bg-red-100 text-red-800' :
                           post.type === 'facebook' ? 'bg-indigo-100 text-indigo-800' :
+                          post.type === 'tiktok' ? 'bg-blue-100 text-blue-800' :
                           'bg-gray-100 text-gray-800'
                         }`}>
                           {post.type}

@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { getPosts } from '../utils/api';
 import { Loader, AlertCircle } from 'lucide-react';
-import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
+import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X, Facebook, Youtube } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import '../Blog.css'; // Importar los estilos CSS
 
 const SocialIcon = ({ network, className = '' }) => {
   const icons = {
     instagram: Instagram,
-    twitter: Twitter
+    twitter: Twitter,
+    facebook: Facebook,
+    youtube: Youtube,
+    tiktok: () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-tiktok">
+        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+      </svg>
+    )
   };
-  const Icon = icons[network];
+  const Icon = icons[network] || Instagram; // Default to Instagram if network not found
   
   const bgColors = {
     instagram: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400',
-    twitter: 'bg-[#1DA1F2]'
+    twitter: 'bg-black',
+    facebook: 'bg-[#1877F2]',
+    youtube: 'bg-[#FF0000]',
+    tiktok: 'bg-black'
   };
 
   return (
-    <div className={`${bgColors[network]} p-1.5 rounded-full ${className}`}>
+    <div className={`${bgColors[network] || bgColors.instagram} p-1.5 rounded-full ${className}`}>
       <Icon className="w-4 h-4 text-white" />
     </div>
   );
@@ -191,9 +201,7 @@ const SocialCard = ({ post, className = '', onClick }) => {
           <p className="text-white/80 text-xs mb-3 line-clamp-2">
             {post.content && post.content.replace(/<[^>]*>?/gm, '')}
           </p>
-          <button className="bg-white/20 hover:bg-white/30 text-white rounded-full p-1.5 transition-colors">
-            <Eye className="w-4 h-4" />
-          </button>
+          {/* Botón sin icono */}
         </div>
       </div>
     </div>
@@ -253,7 +261,7 @@ const SocialFeed = () => {
   // Determine grid layout based on number of posts
   const getGridClass = () => {
     const count = posts.length;
-    if (count === 1) return 'grid-cols-1';
+    if (count === 1) return 'grid-cols-1 max-w-md mx-auto';
     if (count === 2) return 'grid-cols-1 md:grid-cols-2';
     if (count === 3) return 'grid-cols-1 md:grid-cols-3';
     if (count === 4) return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
@@ -269,7 +277,7 @@ const SocialFeed = () => {
   };
 
   return (
-    <section className="py-12 px-4 bg-gray-50">
+    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="container mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-[#1b676b]">Síguenos en Redes Sociales</h2>
@@ -278,7 +286,7 @@ const SocialFeed = () => {
           </p>
         </div>
 
-        <div className={`grid ${getGridClass()} gap-6`}>
+        <div className={`grid ${getGridClass()} gap-6 ${posts.length === 1 ? 'min-h-[300px] items-center' : ''}` }>
           {posts.map((post) => (
             <SocialCard 
               key={post.id || post.numericId || post._id || `post-${post.title}`} 

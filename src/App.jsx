@@ -5,12 +5,12 @@ import Menu from './components/Menu';
 import WhatsAppButton from './components/WhatsAppButton';
 
 // Lazy load pages
-const Home = lazy(() => import('./pages/Home'));
-const ServicesPage = lazy(() => import('./pages/Services'));
-const Blog = lazy(() => import('./pages/Blog'));
-const About = lazy(() => import('./pages/About'));
-const Login = lazy(() => import('./pages/Login'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Home = lazy(() => import('./pages/public/Home'));
+const ServicesPage = lazy(() => import('./pages/public/Services'));
+const Blog = lazy(() => import('./pages/public/Blog'));
+const About = lazy(() => import('./pages/public/About'));
+const Login = lazy(() => import('./pages/admin/Login'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
 
 // Fallback loading component
 const PageLoader = () => (

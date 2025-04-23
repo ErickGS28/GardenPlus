@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPosts } from '../utils/api';
+import { getPosts } from '../../utils/api';
 import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import '../Blog.css'; // Importar desde la ubicación correcta

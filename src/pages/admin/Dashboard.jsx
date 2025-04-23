@@ -5,7 +5,8 @@ import {
   getServices, addService, updateService, deleteService,
   getPosts, addPost, updatePost, deletePost,
   uploadToCloudflare, logout
-} from '../utils/api';
+} from '../../utils/api';
+import { getSocialMediaImage } from '../../utils/helpers';
 
 // Service Management Component
 const ManageServices = () => {
@@ -520,61 +521,46 @@ const ManageServices = () => {
 
 // Social Media Icon Component
 const SocialMediaIcon = ({ type }) => {
-  const getIconStyle = () => {
-    switch (type) {
-      case 'instagram':
-        return {
-          bg: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400',
-          icon: <Instagram className="w-4 h-4 text-white" />
-        };
-      case 'youtube':
-        return {
-          bg: 'bg-[#FF0000]',
-          icon: <Youtube className="w-4 h-4 text-white" />
-        };
-      case 'facebook':
-        return {
-          bg: 'bg-[#1877F2]',
-          icon: <Facebook className="w-4 h-4 text-white" />
-        };
-      case 'twitter':
-        return {
-          bg: 'bg-black',
-          icon: <Twitter className="w-4 h-4 text-white" />
-        };
-      case 'tiktok':
-        return {
-          bg: 'bg-black',
-          icon: (
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              className="w-4 h-4 text-white"
-            >
-              <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-            </svg>
-          )
-        };
-      default:
-        return {
-          bg: 'bg-gray-500',
-          icon: <Instagram className="w-4 h-4 text-white" />
-        };
-    }
-  };
-
-  const { bg, icon } = getIconStyle();
-
+  // Use the image icons from assets folder
   return (
-    <div className={`${bg} p-1.5 rounded-full flex items-center justify-center`}>
-      {icon}
+    <div className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center">
+      <img 
+        src={getSocialMediaImage(type)} 
+        alt={type || 'social media'} 
+        className="w-full h-full object-cover"
+        onError={(e) => {
+          e.target.onerror = null;
+          // Fallback to default styling if image fails to load
+          const parent = e.target.parentNode;
+          if (parent) {
+            switch (type) {
+              case 'instagram':
+                parent.className = "w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center";
+                e.target.replaceWith(document.createElement('div'));
+                break;
+              case 'youtube':
+                parent.className = "w-6 h-6 rounded-full bg-[#FF0000] flex items-center justify-center";
+                e.target.replaceWith(document.createElement('div'));
+                break;
+              case 'facebook':
+                parent.className = "w-6 h-6 rounded-full bg-[#1877F2] flex items-center justify-center";
+                e.target.replaceWith(document.createElement('div'));
+                break;
+              case 'twitter':
+                parent.className = "w-6 h-6 rounded-full bg-black flex items-center justify-center";
+                e.target.replaceWith(document.createElement('div'));
+                break;
+              case 'tiktok':
+                parent.className = "w-6 h-6 rounded-full bg-black flex items-center justify-center";
+                e.target.replaceWith(document.createElement('div'));
+                break;
+              default:
+                parent.className = "w-6 h-6 rounded-full bg-gray-400 flex items-center justify-center";
+                e.target.replaceWith(document.createElement('div'));
+            }
+          }
+        }}
+      />
     </div>
   );
 };
@@ -680,15 +666,18 @@ const ManagePosts = () => {
       // Create or update post
       let postResponse;
       if (editingPost) {
-        postResponse = await updatePost(editingPost.id || editingPost.numericId, postData);
+        const postId = editingPost.id || editingPost.numericId;
+        console.log(`Updating post with ID: ${postId}`, postData);
+        postResponse = await updatePost(postId, postData);
         
         // Update the posts list
         setPosts(posts.map(post => 
-          (post.id || post.numericId) === (editingPost.id || editingPost.numericId) ? postResponse : post
+          (post.id || post.numericId) === postId ? postResponse : post
         ));
         
         setEditingPost(null);
       } else {
+        console.log('Creating new post:', postData);
         postResponse = await addPost(postData);
         
         // Add the new post to the list
@@ -747,11 +736,12 @@ const ManagePosts = () => {
   const handleDeletePost = async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar esta publicación?')) {
       try {
+        console.log(`Deleting post with ID: ${id}`);
         await deletePost(id);
         setPosts(posts.filter(post => (post.id || post.numericId) !== id));
       } catch (err) {
         setError('Error al eliminar la publicación. Por favor, intenta de nuevo.');
-        console.error(err);
+        console.error('Error deleting post:', err);
       }
     }
   };
@@ -859,7 +849,9 @@ const ManagePosts = () => {
                 <option value="twitter">Twitter (X)</option>
               </select>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Actualmente se admiten los tipos "instagram", "youtube", "facebook", "tiktok" y "twitter (X)"</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Selecciona el tipo de red social para esta publicación
+            </p>
           </div>
           
           <div>
@@ -873,6 +865,15 @@ const ManagePosts = () => {
                     src={newPost.previewUrl} 
                     alt="Vista previa" 
                     className="w-full h-full object-cover rounded-md"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      // Fallback to default styling if image fails to load
+                      const parent = e.target.parentNode;
+                      if (parent) {
+                        parent.className = "w-full max-w-xs h-40 mb-2 bg-gray-200 flex items-center justify-center rounded-md";
+                        e.target.replaceWith(document.createElement('div'));
+                      }
+                    }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
                     <button
@@ -986,7 +987,10 @@ const ManagePosts = () => {
                     <div className="flex items-center space-x-2 mb-2">
                       <h4 className="font-semibold text-[#1b676b]">{post.title}</h4>
                       {post.type && (
-                        <SocialMediaIcon type={post.type} />
+                        <div className="flex items-center">
+                          <SocialMediaIcon type={post.type} />
+                          <span className="ml-1 text-xs text-gray-500 capitalize">{post.type}</span>
+                        </div>
                       )}
                     </div>
                     
@@ -996,6 +1000,15 @@ const ManagePosts = () => {
                           src={post.previewUrl} 
                           alt={post.title}
                           className="w-20 h-20 object-cover rounded-md flex-shrink-0"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            // Fallback to default styling if image fails to load
+                            const parent = e.target.parentNode;
+                            if (parent) {
+                              parent.className = "w-20 h-20 bg-gray-200 flex items-center justify-center rounded-md";
+                              e.target.replaceWith(document.createElement('div'));
+                            }
+                          }}
                         />
                       )}
                       <p className="text-sm text-gray-600 line-clamp-3">

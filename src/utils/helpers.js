@@ -3,7 +3,6 @@
 // Import social media icons
 import facebookIcon from '../assets/smIcons/facebook.png';
 import instagramIcon from '../assets/smIcons/instagram.png';
-import linkedinIcon from '../assets/smIcons/linkedin.png';
 import tiktokIcon from '../assets/smIcons/tik-tok.png';
 import twitterIcon from '../assets/smIcons/twitter.png';
 import youtubeIcon from '../assets/smIcons/youtube.png';
@@ -19,8 +18,6 @@ export const getSocialMediaImage = (type) => {
       return facebookIcon;
     case 'instagram':
       return instagramIcon;
-    case 'linkedin':
-      return linkedinIcon;
     case 'tiktok':
       return tiktokIcon;
     case 'twitter':

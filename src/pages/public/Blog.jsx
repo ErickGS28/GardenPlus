@@ -10,7 +10,6 @@ import facebookIcon from '../../assets/smIcons/facebook.png';
 import twitterIcon from '../../assets/smIcons/twitter.png';
 import youtubeIcon from '../../assets/smIcons/youtube.png';
 import tiktokIcon from '../../assets/smIcons/tik-tok.png';
-import linkedinIcon from '../../assets/smIcons/linkedin.png';
 
 const SocialIcon = ({ network, className = '' }) => {
   // Mapa de iconos de redes sociales
@@ -20,7 +19,6 @@ const SocialIcon = ({ network, className = '' }) => {
     facebook: facebookIcon,
     youtube: youtubeIcon,
     tiktok: tiktokIcon,
-    linkedin: linkedinIcon
   };
   
   // El backend solo acepta ciertos valores para 'type'

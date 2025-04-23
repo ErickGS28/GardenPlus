@@ -231,7 +231,7 @@ const Services = () => {
     <section id="services" className="py-12 px-4 bg-white">
       <div className="container mx-auto max-w-5xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#1b676b]">Nuestros Servicios</h2>
+          <h2 className="text-4xl font-bold text-[#1b676b]">Nuestros Servicios</h2>
           <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
             Ofrecemos soluciones completas para tus espacios verdes, desde diseño hasta mantenimiento.
           </p>

@@ -199,7 +199,6 @@ const PostForm = ({
           <option value="twitter">Twitter</option>
           <option value="youtube">YouTube</option>
           <option value="tiktok">TikTok</option>
-          <option value="linkedin">LinkedIn</option>
         </select>
       </div>
 

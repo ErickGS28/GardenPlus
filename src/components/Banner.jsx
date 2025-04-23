@@ -176,10 +176,10 @@ const Banner = memo(() => {
                     href="#services" 
                     onClick={(e) => {
                       e.preventDefault();
-                      const target = document.querySelector('h2[data-component-name="Services"]');
-                      if (target) {
-                        const headerOffset = 100; // Offset para tener en cuenta el encabezado fijo
-                        const elementPosition = target.getBoundingClientRect().top;
+                      const servicesSection = document.getElementById('services');
+                      if (servicesSection) {
+                        const headerOffset = 80; // Ajuste para compensar headers fijos
+                        const elementPosition = servicesSection.getBoundingClientRect().top;
                         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                         
                         window.scrollTo({
@@ -187,7 +187,7 @@ const Banner = memo(() => {
                           behavior: 'smooth'
                         });
                       } else {
-                        console.warn('Target element not found');
+                        console.warn('No se pudo encontrar la sección de servicios con ID "services"');
                       }
                     }}
                     className="inline-block mt-4 bg-white text-primary px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:bg-primary hover:text-white hover:scale-105 hover:shadow-lg"

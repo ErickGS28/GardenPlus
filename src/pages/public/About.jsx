@@ -6,7 +6,7 @@ const About = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header with decorative elements */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-4 text-primary relative inline-block">
+          <h1 className="text-4xl font-bold mb-4 text-primary relative inline-block">
             Nosotros
             <div className="absolute -bottom-2 left-0 w-full h-1 bg-secondary"></div>
           </h1>

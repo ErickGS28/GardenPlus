@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPosts } from '../utils/api';
+import { getPosts } from '../services/config/api';
 import { Loader, AlertCircle } from 'lucide-react';
 import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X, Facebook, Youtube } from 'lucide-react';
 import { createPortal } from 'react-dom';

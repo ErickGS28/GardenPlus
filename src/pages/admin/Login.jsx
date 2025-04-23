@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login, isAuthenticated } from '../../utils/api';
+import { login, isAuthenticated } from '../../services/config/api';
 import { Loader } from 'lucide-react';
 
 const Login = () => {

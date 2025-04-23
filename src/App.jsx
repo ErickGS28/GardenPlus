@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Footer from './components/Footer';
 import Menu from './components/Menu';
 import WhatsAppButton from './components/WhatsAppButton';
+import { Toaster } from 'react-hot-toast';
 
 // Lazy load pages
 const Home = lazy(() => import('./pages/public/Home'));
@@ -53,24 +54,55 @@ const ScrollToTop = () => {
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <div className="flex flex-col min-h-screen border-0">
-        <ScrollToTop />
-        <Menu />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/services" element={<ServicesPage />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Routes>
-        </Suspense>
-        <Footer />
-        <WhatsAppButton phoneNumber="5218125410048" /> 
-      </div>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <div className="flex flex-col min-h-screen border-0">
+          <ScrollToTop />
+          <Menu />
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+          </Suspense>
+          <Footer />
+          <WhatsAppButton phoneNumber="5218125410048" /> 
+        </div>
+      </BrowserRouter>
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          success: {
+            duration: 3000,
+            style: {
+              background: '#ECFDF5',
+              color: '#065F46',
+              border: '1px solid #A7F3D0',
+            },
+            iconTheme: {
+              primary: '#10B981',
+              secondary: '#ECFDF5',
+            },
+          },
+          error: {
+            duration: 4000,
+            style: {
+              background: '#FEF2F2',
+              color: '#B91C1C',
+              border: '1px solid #FECACA',
+            },
+            iconTheme: {
+              primary: '#EF4444',
+              secondary: '#FEF2F2',
+            },
+          },
+        }}
+      />
+    </>
   );
 };
 

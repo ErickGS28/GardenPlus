@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { getServices } from '../utils/api';
+import { getServices } from '../services/config/api';
 import { Loader, AlertCircle, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import MediaGallery from './MediaGallery';

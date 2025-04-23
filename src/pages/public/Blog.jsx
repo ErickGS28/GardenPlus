@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getPosts } from '../../utils/api';
+import { getPosts } from '../../services/config/api';
 import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import '../Blog.css'; // Importar desde la ubicación correcta
+import '../../Blog.css'; // Importar desde la ubicación correcta
 
 const SocialIcon = ({ network, className = '' }) => {
   // El backend solo acepta 'instagram' como valor válido para 'type'

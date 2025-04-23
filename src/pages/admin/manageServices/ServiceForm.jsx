@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircle, Trash2, Image, Loader, Video, AlertTriangle } from 'lucide-react';
 
-const FILE_SIZE_LIMIT_MB = 10; // 10MB - Ajustado para coincidir con el límite del servidor
+const FILE_SIZE_LIMIT_MB = 100; // 100MB
 const ALLOWED_VIDEO_FORMATS = ['MP4', 'WebM', 'OGG', 'QuickTime'];
 
 const ServiceForm = ({ 
@@ -352,7 +352,8 @@ const ServiceForm = ({
             <div className="mt-2 text-xs text-gray-500 flex items-start w-full">
               <AlertTriangle className="w-4 h-4 mr-1 text-amber-500 flex-shrink-0 mt-0.5" />
               <span>
-                Límite: {FILE_SIZE_LIMIT_MB}MB por archivo debido a restricciones del servidor.
+                Límite: {FILE_SIZE_LIMIT_MB}MB por archivo. 
+                Formatos de video permitidos: {ALLOWED_VIDEO_FORMATS.join(', ')}.
               </span>
             </div>
           </div>

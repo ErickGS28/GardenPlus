@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, Loader, ImageIcon, X } from 'lucide-react';
 import { uploadToCloudflare } from '../../../services/config/api';
+import toast from 'react-hot-toast';
 
 const PostForm = ({ 
   post, 
@@ -20,6 +21,7 @@ const PostForm = ({
     iframe: ''
   });
   const [previewImage, setPreviewImage] = useState('');
+  const [imageRemoved, setImageRemoved] = useState(false);
 
   // Initialize form data when post prop changes
   useEffect(() => {
@@ -47,6 +49,7 @@ const PostForm = ({
       setPreviewImage('');
     }
     setSelectedFile(null);
+    setImageRemoved(false);
   }, [post]);
 
   const handleInputChange = (e) => {
@@ -65,6 +68,7 @@ const PostForm = ({
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
+        setImageRemoved(false);
       };
       reader.readAsDataURL(file);
     }
@@ -72,11 +76,14 @@ const PostForm = ({
 
   const removeSelectedFile = () => {
     setSelectedFile(null);
-    if (!post?.previewUrl) {
-      setPreviewImage('');
-    } else {
-      setPreviewImage(post.previewUrl);
-    }
+    setPreviewImage('');
+    setImageRemoved(true);
+    
+    // También actualizar formData para eliminar la previewUrl
+    setFormData(prev => ({
+      ...prev,
+      previewUrl: ''
+    }));
   };
 
   const uploadFileToCloudflare = async (file) => {
@@ -103,19 +110,35 @@ const PostForm = ({
     let finalData = { ...formData };
 
     try {
+      // Si se ha quitado la imagen, asegurarse de que previewUrl sea vacío
+      if (imageRemoved) {
+        finalData.previewUrl = '';
+      }
+      
       // Upload preview image if selected
       if (selectedFile) {
-        const previewUrl = await uploadFileToCloudflare(selectedFile);
-        if (previewUrl) {
-          finalData.previewUrl = previewUrl;
+        try {
+          const previewUrl = await uploadFileToCloudflare(selectedFile);
+          if (previewUrl) {
+            finalData.previewUrl = previewUrl;
+          } else {
+            // Si no se obtuvo una URL, mostrar error y detener el envío
+            toast.error('No se pudo subir la imagen. Intente nuevamente.');
+            return;
+          }
+        } catch (uploadError) {
+          console.error('Error al subir la imagen:', uploadError);
+          toast.error('Error al subir la imagen. Intente nuevamente.');
+          return;
         }
       }
 
       // Call the parent component's onSubmit with the file
-      await onSubmit(finalData, selectedFile);
+      await onSubmit(finalData, selectedFile ? [selectedFile] : []);
 
     } catch (err) {
       console.error('Error in PostForm submission:', err);
+      toast.error('Error al enviar el formulario. Intente nuevamente.');
     }
   };
 
@@ -162,7 +185,7 @@ const PostForm = ({
 
       <div>
         <label htmlFor="type" className="block mb-2 text-sm font-medium text-gray-900">
-          Tipo de Publicación
+          Tipo de Red Social
         </label>
         <select
           id="type"
@@ -171,13 +194,12 @@ const PostForm = ({
           onChange={handleInputChange}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         >
-          <option value="post">Estándar</option>
-          <option value="featured">Destacado</option>
           <option value="instagram">Instagram</option>
           <option value="facebook">Facebook</option>
           <option value="twitter">Twitter</option>
           <option value="youtube">YouTube</option>
           <option value="tiktok">TikTok</option>
+          <option value="linkedin">LinkedIn</option>
         </select>
       </div>
 
@@ -200,9 +222,20 @@ const PostForm = ({
       </div>
 
       <div>
-        <label className="block mb-2 text-sm font-medium text-gray-900">
-          Imagen de Portada (opcional)
-        </label>
+        <div className="flex justify-between items-center mb-2">
+          <label className="block text-sm font-medium text-gray-900">
+            Imagen de Portada (opcional)
+          </label>
+          {isEditing && previewImage && !selectedFile && (
+            <button
+              type="button"
+              onClick={removeSelectedFile}
+              className="text-xs text-blue-600 hover:text-blue-800"
+            >
+              Quitar imagen actual
+            </button>
+          )}
+        </div>
         
         {previewImage ? (
           <div className="relative w-full h-48 mb-4 bg-gray-100 rounded-lg overflow-hidden">
@@ -222,6 +255,9 @@ const PostForm = ({
                 }
               }}
             />
+            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 text-center">
+              {selectedFile ? 'Nueva imagen seleccionada' : 'Imagen actual'}
+            </div>
             <button 
               type="button"
               onClick={removeSelectedFile}
@@ -236,7 +272,9 @@ const PostForm = ({
             <span className="flex flex-col items-center justify-center space-y-2">
               <ImageIcon className="w-8 h-8 text-gray-400" />
               <span className="text-sm text-gray-500">
-                Arrastra una imagen aquí o haz clic para seleccionar
+                {imageRemoved 
+                  ? 'Imagen eliminada. Haz clic para seleccionar una nueva' 
+                  : 'Arrastra una imagen aquí o haz clic para seleccionar'}
               </span>
             </span>
             <input 

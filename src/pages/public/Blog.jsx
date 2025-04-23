@@ -1,28 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { getPosts } from '../../services/config/api';
-import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import '../../Blog.css'; // Importar desde la ubicación correcta
 
-const SocialIcon = ({ network, className = '' }) => {
-  // El backend solo acepta 'instagram' como valor válido para 'type'
-  // así que ajustamos todo para usar ese valor
-  const finalNetwork = network || 'instagram';
-  
-  const icons = {
-    instagram: Instagram,
-    twitter: Twitter
-  };
-  const Icon = icons[finalNetwork] || Instagram;
-  
-  const bgColors = {
-    instagram: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400',
-    twitter: 'bg-[#1DA1F2]'
-  };
+// Importar los iconos de redes sociales
+import instagramIcon from '../../assets/smIcons/instagram.png';
+import facebookIcon from '../../assets/smIcons/facebook.png';
+import twitterIcon from '../../assets/smIcons/twitter.png';
+import youtubeIcon from '../../assets/smIcons/youtube.png';
+import tiktokIcon from '../../assets/smIcons/tik-tok.png';
+import linkedinIcon from '../../assets/smIcons/linkedin.png';
 
+const SocialIcon = ({ network, className = '' }) => {
+  // Mapa de iconos de redes sociales
+  const icons = {
+    instagram: instagramIcon,
+    twitter: twitterIcon,
+    facebook: facebookIcon,
+    youtube: youtubeIcon,
+    tiktok: tiktokIcon,
+    linkedin: linkedinIcon
+  };
+  
+  // El backend solo acepta ciertos valores para 'type'
+  const finalNetwork = network || 'instagram';
+  const networkIcon = icons[finalNetwork] || instagramIcon; // Default to Instagram if network not found
+  
   return (
-    <div className={`${bgColors[finalNetwork] || bgColors.instagram} p-1.5 rounded-full ${className}`}>
-      <Icon className="w-4 h-4 text-white" />
+    <div className={`bg-white p-1.5 rounded-full flex items-center justify-center ${className}`}>
+      <img src={networkIcon} alt={`${finalNetwork} icon`} className="w-5 h-5 object-contain" />
     </div>
   );
 };
@@ -164,6 +171,25 @@ const PostPopover = ({ post, onClose }) => {
 };
 
 const SocialCard = ({ post, className = '', onClick }) => {
+  // Determine social network type based on post type
+  const determineNetwork = () => {
+    if (post.type) return post.type.toLowerCase();
+    if (post.content && post.content.includes('instagram')) {
+      return 'instagram';
+    } else if (post.content && post.content.includes('twitter')) {
+      return 'twitter';
+    } else if (post.content && post.content.includes('facebook')) {
+      return 'facebook';
+    } else if (post.content && post.content.includes('youtube')) {
+      return 'youtube';
+    } else if (post.content && post.content.includes('tiktok')) {
+      return 'tiktok';
+    }
+    return 'instagram'; // Default
+  };
+  
+  const network = determineNetwork();
+
   return (
     <div 
       className={`group relative overflow-hidden rounded-2xl blog-card ${className} transition-transform duration-300 hover:scale-105 cursor-pointer h-[260px]`}
@@ -182,7 +208,7 @@ const SocialCard = ({ post, className = '', onClick }) => {
 
       <div className="relative h-full p-4 flex flex-col">
         <div className="flex items-center mb-2">
-          <SocialIcon network="instagram" />
+          <SocialIcon network={network} className="w-8 h-8 shadow-md" />
         </div>
 
         <div className="mt-auto">

@@ -1,35 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { getPosts } from '../services/config/api';
-import { Loader, AlertCircle } from 'lucide-react';
-import { Instagram, Twitter, Heart, MessageCircle, Share2, Play, Eye, X, Facebook, Youtube } from 'lucide-react';
+import { Loader, AlertCircle, Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import '../Blog.css'; // Importar los estilos CSS
 
+// Importar los iconos de redes sociales
+import instagramIcon from '../assets/smIcons/instagram.png';
+import facebookIcon from '../assets/smIcons/facebook.png';
+import twitterIcon from '../assets/smIcons/twitter.png';
+import youtubeIcon from '../assets/smIcons/youtube.png';
+import tiktokIcon from '../assets/smIcons/tik-tok.png';
+import linkedinIcon from '../assets/smIcons/linkedin.png';
+
 const SocialIcon = ({ network, className = '' }) => {
+  // Mapa de iconos de redes sociales
   const icons = {
-    instagram: Instagram,
-    twitter: Twitter,
-    facebook: Facebook,
-    youtube: Youtube,
-    tiktok: () => (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-tiktok">
-        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-      </svg>
-    )
+    instagram: instagramIcon,
+    twitter: twitterIcon,
+    facebook: facebookIcon,
+    youtube: youtubeIcon,
+    tiktok: tiktokIcon,
+    linkedin: linkedinIcon
   };
-  const Icon = icons[network] || Instagram; // Default to Instagram if network not found
   
-  const bgColors = {
-    instagram: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400',
-    twitter: 'bg-black',
-    facebook: 'bg-[#1877F2]',
-    youtube: 'bg-[#FF0000]',
-    tiktok: 'bg-black'
-  };
+  // Asegurarse de que el network esté en minúsculas y sea válido
+  const normalizedNetwork = (network || '').toLowerCase();
+  const networkIcon = icons[normalizedNetwork] || instagramIcon; // Default to Instagram if network not found
 
   return (
-    <div className={`${bgColors[network] || bgColors.instagram} p-1.5 rounded-full ${className}`}>
-      <Icon className="w-4 h-4 text-white" />
+    <div className={`bg-white p-1.5 rounded-full flex items-center justify-center ${className}`}>
+      <img src={networkIcon} alt={`${normalizedNetwork} icon`} className="w-5 h-5 object-contain" />
     </div>
   );
 };
@@ -163,6 +163,12 @@ const SocialCard = ({ post, className = '', onClick }) => {
       return 'instagram';
     } else if (post.content && post.content.includes('twitter')) {
       return 'twitter';
+    } else if (post.content && post.content.includes('facebook')) {
+      return 'facebook';
+    } else if (post.content && post.content.includes('youtube')) {
+      return 'youtube';
+    } else if (post.content && post.content.includes('tiktok')) {
+      return 'tiktok';
     }
     return 'instagram'; // Default
   };
@@ -190,8 +196,8 @@ const SocialCard = ({ post, className = '', onClick }) => {
       </div>
 
       <div className="relative h-full p-4 flex flex-col">
-        <div className="flex items-center mb-2">
-          <SocialIcon network={network} />
+        <div className="flex items-start mb-2">
+          <SocialIcon network={network} className="w-9 h-9 shadow-lg" />
         </div>
 
         <div className="mt-auto">
@@ -201,7 +207,6 @@ const SocialCard = ({ post, className = '', onClick }) => {
           <p className="text-white/80 text-xs mb-3 line-clamp-2">
             {post.content && post.content.replace(/<[^>]*>?/gm, '')}
           </p>
-          {/* Botón sin icono */}
         </div>
       </div>
     </div>

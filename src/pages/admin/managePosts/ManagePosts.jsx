@@ -92,11 +92,18 @@ const ManagePosts = () => {
               // Determine type based on file mimetype
               const type = file.type.startsWith('image/') ? 'image' : 'video';
               multimedia.push({ url: fileUrl, type });
+            } else {
+              toast.error('Error al subir la imagen. No se recibió una URL válida.');
+              setIsSubmitting(false);
+              return;
             }
             // Update progress incrementally
             setUploadProgress(10 + Math.floor((i + 1) / files.length * 80));
           } catch (uploadError) {
             console.error(`Error uploading file ${i + 1}:`, uploadError);
+            toast.error('Error al subir la imagen. Por favor, intente de nuevo.');
+            setIsSubmitting(false);
+            return;
           }
         }
       }
@@ -105,10 +112,13 @@ const ManagePosts = () => {
       const apiPostData = {
         title: postData.title,
         content: postData.content,
+        type: postData.type || 'instagram',
         category: postData.category || 'General',
         multimedia: multimedia,
         companyId: 2,
         siteId: 1,
+        previewUrl: postData.previewUrl || '',
+        iframe: postData.iframe || ''
       };
       
       let postResponse;

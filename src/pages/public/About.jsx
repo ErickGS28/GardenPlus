@@ -6,11 +6,11 @@ const About = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header with decorative elements */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-4 text-emerald-900 relative inline-block">
+          <h1 className="text-5xl font-bold mb-4 text-primary relative inline-block">
             Nosotros
-            <div className="absolute -bottom-2 left-0 w-full h-1 bg-[#88c425]"></div>
+            <div className="absolute -bottom-2 left-0 w-full h-1 bg-secondary"></div>
           </h1>
-          <p className="text-xl text-emerald-700 max-w-2xl mx-auto">
+          <p className="text-xl text-primary/70 max-w-2xl mx-auto">
             Transformando espacios verdes en experiencias extraordinarias
           </p>
         </div>
@@ -19,9 +19,9 @@ const About = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
           {/* Left column - Our History */}
           <div className="h-full">
-            <div className="bg-white rounded-2xl shadow-lg p-8 relative z-10 border border-emerald-100 h-full flex flex-col">
-              <h2 className="text-3xl font-semibold mb-6 text-emerald-800 flex items-center">
-                <span className="w-8 h-8 rounded-full bg-[#88c425] flex items-center justify-center text-white mr-3">
+            <div className="bg-white rounded-2xl shadow-lg p-8 relative z-10 border border-primary/10 h-full flex flex-col">
+              <h2 className="text-3xl font-semibold mb-6 text-primary flex items-center">
+                <span className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5.5a.75.75 0 001.5 0V5z" clipRule="evenodd" />
                   </svg>
@@ -54,9 +54,9 @@ const About = () => {
 
           {/* Right column - Our Mission */}
           <div className="h-full">
-            <div className="bg-white rounded-2xl shadow-lg p-8 relative z-10 border border-emerald-100 h-full flex flex-col">
-              <h2 className="text-3xl font-semibold mb-6 text-emerald-800 flex items-center">
-                <span className="w-8 h-8 rounded-full bg-[#1b676b] flex items-center justify-center text-white mr-3">
+            <div className="bg-white rounded-2xl shadow-lg p-8 relative z-10 border border-primary/10 h-full flex flex-col">
+              <h2 className="text-3xl font-semibold mb-6 text-primary flex items-center">
+                <span className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                     <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
@@ -85,7 +85,7 @@ const About = () => {
 
         {/* Values section */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12 text-emerald-900">Nuestros Valores</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-primary">Nuestros Valores</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { 
@@ -118,10 +118,10 @@ const About = () => {
             ].map((value, index) => (
               <div 
                 key={index}
-                className="bg-white rounded-xl p-6 shadow-md border border-emerald-50 flex flex-col items-center text-center"
+                className="bg-white rounded-xl p-6 shadow-md border border-primary/5 flex flex-col items-center text-center"
               >
-                <div className="text-[#1b676b] mb-4">{value.icon}</div>
-                <h3 className="text-xl font-semibold mb-3 text-emerald-800">{value.title}</h3>
+                <div className="text-primary mb-4">{value.icon}</div>
+                <h3 className="text-xl font-semibold mb-3 text-primary">{value.title}</h3>
                 <p className="text-gray-600">{value.description}</p>
               </div>
             ))}

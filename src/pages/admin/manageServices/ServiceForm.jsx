@@ -211,7 +211,7 @@ const ServiceForm = ({
             name="name"
             value={newService.name}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425]"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
             placeholder="Título del servicio"
             required
           />
@@ -227,7 +227,7 @@ const ServiceForm = ({
             value={newService.description}
             onChange={handleInputChange}
             rows="3"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425]"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
             placeholder="Descripción del servicio"
             required
           />
@@ -243,7 +243,7 @@ const ServiceForm = ({
             name="category"
             value={newService.category}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425]"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
             placeholder="Categoría del servicio"
             required
           />
@@ -362,7 +362,7 @@ const ServiceForm = ({
             <div className="mt-2">
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div 
-                  className="bg-[#88c425] h-2.5 rounded-full" 
+                  className="bg-secondary h-2.5 rounded-full" 
                   style={{ width: `${uploadProgress}%` }}
                 ></div>
               </div>
@@ -376,7 +376,7 @@ const ServiceForm = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-[#1b676b] text-white px-6 py-3 rounded-md hover:bg-[#145256] transition-colors flex items-center"
+          className="bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90 transition-colors flex items-center"
         >
           {isSubmitting ? (
             <>

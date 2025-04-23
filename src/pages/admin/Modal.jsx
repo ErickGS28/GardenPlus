@@ -8,7 +8,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     <div className="fixed inset-0 bg-transparent z-50 flex justify-center items-center p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-6 border-b">
-          <h3 className="text-xl font-semibold text-[#1b676b]">{title}</h3>
+          <h3 className="text-xl font-semibold text-primary">{title}</h3>
           <button 
             onClick={onClose} 
             className="text-gray-500 hover:text-gray-700"

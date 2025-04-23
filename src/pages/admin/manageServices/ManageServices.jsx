@@ -32,7 +32,7 @@ const ServiceCard = ({ service, onEdit, onDelete }) => {
     <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden h-[420px] flex flex-col">
       {/* Title */}
       <div className="p-4 border-b bg-gray-50">
-        <h4 className="font-semibold text-[#1b676b] text-lg truncate">{service.name}</h4>
+        <h4 className="font-semibold text-primary text-lg truncate">{service.name}</h4>
         {service.type === 'featured' && (
           <span className="inline-block bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full mt-1">
             Destacado
@@ -388,7 +388,7 @@ const ManageServices = () => {
   if (loading) {
     return (
       <div className="bg-white rounded-xl shadow-md p-6 flex justify-center items-center h-64">
-        <Loader className="w-8 h-8 text-[#1b676b] animate-spin" />
+        <Loader className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -396,10 +396,10 @@ const ManageServices = () => {
   return (
     <div className="bg-white rounded-xl shadow-md p-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-[#1b676b]">Gestionar Servicios</h2>
+        <h2 className="text-2xl font-bold text-primary">Gestionar Servicios</h2>
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="bg-[#1b676b] text-white px-4 py-2 rounded-md hover:bg-[#145256] transition-colors flex items-center"
+          className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors flex items-center"
         >
           <PlusCircle className="w-4 h-4 mr-2" />
           Nuevo Servicio
@@ -420,7 +420,7 @@ const ManageServices = () => {
               placeholder="Buscar servicios..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425] pl-10"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary pl-10"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -435,7 +435,7 @@ const ManageServices = () => {
             <p className="text-gray-500 italic mb-4">No hay servicios disponibles</p>
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-[#1b676b] text-white px-4 py-2 rounded-md hover:bg-[#145256] transition-colors flex items-center mx-auto"
+              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors flex items-center mx-auto"
             >
               <PlusCircle className="w-4 h-4 mr-2" />
               Crear tu primer servicio

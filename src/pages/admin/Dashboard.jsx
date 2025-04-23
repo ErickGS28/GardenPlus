@@ -19,7 +19,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-100 py-20">
       <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-24 xl:px-32 max-w-4xl">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-[#1b676b]">Panel de Administración</h1>
+          <h1 className="text-3xl font-bold text-primary">Panel de Administración</h1>
           <button
             onClick={handleLogout}
             className="flex items-center text-white px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition-colors"
@@ -35,7 +35,7 @@ const Dashboard = () => {
               onClick={() => setActiveTab('services')}
               className={`px-6 py-2 font-medium text-sm ${
                 activeTab === 'services'
-                  ? 'border-b-2 border-[#1b676b] text-[#1b676b]'
+                  ? 'border-b-2 border-primary text-primary'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -45,7 +45,7 @@ const Dashboard = () => {
               onClick={() => setActiveTab('posts')}
               className={`px-6 py-2 font-medium text-sm ${
                 activeTab === 'posts'
-                  ? 'border-b-2 border-[#1b676b] text-[#1b676b]'
+                  ? 'border-b-2 border-primary text-primary'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >

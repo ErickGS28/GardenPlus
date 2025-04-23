@@ -138,7 +138,7 @@ const Banner = memo(() => {
   );
 
   return (
-    <div id="inicio" className="relative h-screen overflow-hidden bg-[#1b676b]">
+    <div id="inicio" className="relative h-screen overflow-hidden bg-primary">
       <Slider ref={setSliderRef} {...settings} className="h-full">
         {slides.map((slide, index) => (
           <div key={index} className="h-screen">
@@ -190,7 +190,7 @@ const Banner = memo(() => {
                         console.warn('Target element not found');
                       }
                     }}
-                    className="inline-block mt-4 bg-white text-[#1b676b] px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:bg-[#1b676b] hover:text-white hover:scale-105 hover:shadow-lg"
+                    className="inline-block mt-4 bg-white text-primary px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:bg-primary hover:text-white hover:scale-105 hover:shadow-lg"
                   >
                     Descubrir Servicios
                   </a>

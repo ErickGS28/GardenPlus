@@ -290,7 +290,7 @@ const PostForm = ({
 
       {uploadProgress > 0 && uploadProgress < 100 && (
         <div className="w-full bg-gray-200 rounded-full h-2.5">
-          <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
+          <div className="bg-secondary h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
           <p className="text-xs text-center mt-1">Subiendo... {uploadProgress}%</p>
         </div>
       )}
@@ -307,7 +307,7 @@ const PostForm = ({
         <button
           type="submit"
           disabled={isSubmitting || !formData.title || !formData.content}
-          className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 flex items-center justify-center min-w-[100px]"
+          className="py-2 px-4 bg-primary hover:bg-primary/90 text-white rounded-lg disabled:opacity-50 flex items-center justify-center min-w-[100px]"
         >
           {isSubmitting ? (
             <>

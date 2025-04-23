@@ -190,9 +190,9 @@ const SocialCard = ({ post, className = '', onClick }) => {
             />
           </>
         ) : (
-          <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 h-full w-full"></div>
+          <div className="bg-gradient-to-br from-primary to-primary/70 h-full w-full"></div>
         )}
-        <div className={`absolute inset-0 ${!post.previewUrl ? 'bg-gradient-to-br from-emerald-600 to-emerald-800' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
+        <div className={`absolute inset-0 ${!post.previewUrl ? 'bg-gradient-to-br from-primary to-primary/70' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
       </div>
 
       <div className="relative h-full p-4 flex flex-col">
@@ -240,7 +240,7 @@ const SocialFeed = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-8 min-h-[300px]">
-        <Loader className="w-12 h-12 text-[#1b676b] animate-spin" />
+        <Loader className="w-12 h-12 text-primary animate-spin" />
         <p className="mt-4 text-gray-600">Cargando publicaciones...</p>
       </div>
     );
@@ -285,7 +285,7 @@ const SocialFeed = () => {
     <section className="py-16 px-6 sm:px-8 lg:px-12 bg-gray-50">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#1b676b]">Síguenos en Redes Sociales</h2>
+          <h2 className="text-3xl font-bold text-primary">Síguenos en Redes Sociales</h2>
           <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
             Mantente al día con nuestras últimas noticias, eventos y promociones a través de nuestras redes sociales.
           </p>

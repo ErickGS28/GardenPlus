@@ -2,7 +2,6 @@ import React, { useState, useEffect, memo } from 'react';
 import { getServices } from '../services/config/api';
 import { Loader, AlertCircle, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import MediaGallery from './MediaGallery';
 import '../Blog.css';
 
 // Service Popover Component with built-in carousel
@@ -52,7 +51,7 @@ const ServicePopover = memo(({ service, isOpen, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Media section */}
-        <div className="relative bg-gray-900 w-full" style={{ height: '350px' }}>
+        <div className="relative bg-white w-full" style={{ height: '350px' }}>
           {hasMedia ? (
             <>
               <img 

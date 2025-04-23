@@ -6,6 +6,16 @@ html, body {
     overflow-x: hidden; /* Evitar scroll horizontal en toda la aplicación */
 }
 
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+
+@theme {
+    --color-primary: oklch(0.47 0.0712 200.23);
+    --color-secondary: oklch(0.89 0.221 123.91);
+    --color-accent: oklch(0.75 0.1881 129.17);
+}
+
 #root {
     display: flex;
     flex-direction: column;

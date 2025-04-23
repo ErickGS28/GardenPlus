@@ -66,7 +66,7 @@ const Login = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="p-8 bg-white rounded-lg shadow-md">
           <div className="flex justify-center">
-            <Loader className="w-8 h-8 text-[#1b676b] animate-spin" />
+            <Loader className="w-8 h-8 text-primary animate-spin" />
           </div>
           <p className="mt-4 text-center text-gray-600">Verificando sesión...</p>
         </div>
@@ -78,7 +78,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#1b676b]">Iniciar Sesión</h1>
+          <h1 className="text-3xl font-bold text-primary">Iniciar Sesión</h1>
           <p className="text-gray-600 mt-2">Ingresa tus credenciales para acceder al panel de administración</p>
         </div>
 
@@ -100,7 +100,7 @@ const Login = () => {
               required
               value={credentials.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"
               placeholder="ejemplo@correo.com"
             />
           </div>
@@ -116,7 +116,7 @@ const Login = () => {
               required
               value={credentials.password}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#88c425] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"
               placeholder="********"
             />
           </div>
@@ -125,7 +125,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-[#1b676b] hover:bg-[#145256] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1b676b] transition-colors duration-300"
+              className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-300"
             >
               {loading ? (
                 <>

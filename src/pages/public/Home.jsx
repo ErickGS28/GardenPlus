@@ -10,7 +10,7 @@ const CallToAction = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1b676b] mb-6">Expertos en Jardinería y Construcción</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">Expertos en Jardinería y Construcción</h2>
             <p className="text-lg text-gray-700 mb-8 leading-relaxed">
               En <span className="font-semibold text-emerald-700">Garden Plus Morelos</span>, transformamos espacios ordinarios en extraordinarios oasis verdes. Nuestro equipo de profesionales combina creatividad y tecnología para crear ambientes naturales que perduran.
             </p>
@@ -41,7 +41,7 @@ const CallToAction = () => {
             <div className="inline-block">
               <a 
                 href="tel:8125410048" 
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#1b676b] hover:bg-[#1b676b]/90 transition-colors shadow-md"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors shadow-md"
               >
                 Contáctanos
               </a>
@@ -50,21 +50,21 @@ const CallToAction = () => {
           
           <div className="space-y-8">
             <div className="bg-white p-6 rounded-xl shadow-md">
-              <h3 className="text-xl font-bold text-[#1b676b] mb-3">Soluciones Sostenibles</h3>
+              <h3 className="text-xl font-bold text-primary mb-3">Soluciones Sostenibles</h3>
               <p className="text-gray-700">
                 Los sistemas de riego automático reducen el consumo de agua hasta un 40% comparado con métodos tradicionales, mientras mantienen tus áreas verdes en condiciones óptimas durante todo el año.
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-xl shadow-md">
-              <h3 className="text-xl font-bold text-[#1b676b] mb-3">Diseño Personalizado</h3>
+              <h3 className="text-xl font-bold text-primary mb-3">Diseño Personalizado</h3>
               <p className="text-gray-700">
                 Cada proyecto es único. Desde terrazas roof garden hasta sistemas de nebulización para restaurantes, creamos soluciones adaptadas perfectamente a tus necesidades y espacio disponible.
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-xl shadow-md">
-              <h3 className="text-xl font-bold text-[#1b676b] mb-3">Materiales Premium</h3>
+              <h3 className="text-xl font-bold text-primary mb-3">Materiales Premium</h3>
               <p className="text-gray-700">
                 Trabajamos con productos de primera calidad como paneles de sistema ligero, adoquín y equipos RainBird, garantizando instalaciones duraderas y de bajo mantenimiento.
               </p>
@@ -86,7 +86,7 @@ const ProjectShowcase = () => {
   };
 
   return (
-    <section className="py-16 bg-[#1b676b] text-white">
+    <section className="py-16 bg-primary text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Transformamos tu Espacio</h2>
@@ -175,7 +175,7 @@ const ProjectShowcase = () => {
             <a 
               href="#services" 
               onClick={handleScrollToServices}
-              className="inline-flex items-center px-6 py-3 border-2 border-white text-base font-medium rounded-md text-white hover:bg-white hover:text-[#1b676b] transition-colors"
+              className="inline-flex items-center px-6 py-3 border-2 border-white text-base font-medium rounded-md text-white hover:bg-white hover:text-primary transition-colors"
             >
               Explora Nuestros Servicios
             </a>
@@ -192,13 +192,13 @@ const ContactBanner = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <div className="flex flex-col md:flex-row items-center justify-between bg-gray-50 rounded-xl p-6 shadow-sm">
           <div className="mb-4 md:mb-0 text-center md:text-left">
-            <h3 className="text-xl font-bold text-[#1b676b] mb-2">¿Listo para transformar tu espacio?</h3>
+            <h3 className="text-xl font-bold text-primary mb-2">¿Listo para transformar tu espacio?</h3>
             <p className="text-gray-600">Contáctanos hoy mismo para una consulta</p>
           </div>
           <div className="flex space-x-4">
             <a 
               href="tel:8125410048" 
-              className="inline-flex items-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#1b676b] hover:bg-[#1b676b]/90 transition-colors shadow-sm"
+              className="inline-flex items-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors shadow-sm"
             >
               Llamar ahora
             </a>

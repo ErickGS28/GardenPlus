@@ -203,7 +203,7 @@ const SocialCard = ({ post, className = '', onClick }) => {
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         )}
-        <div className={`absolute inset-0 ${!post.previewUrl ? 'bg-gradient-to-br from-emerald-600 to-emerald-800' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
+        <div className={`absolute inset-0 ${!post.previewUrl ? 'bg-gradient-to-br from-primary to-primary/70' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
       </div>
 
       <div className="relative h-full p-4 flex flex-col">
@@ -212,7 +212,7 @@ const SocialCard = ({ post, className = '', onClick }) => {
         </div>
 
         <div className="mt-auto">
-          <h3 className="text-lg font-bold text-white mb-1 group-hover:text-[#bef202] transition-colors duration-300 line-clamp-2">
+          <h3 className="text-lg font-bold text-white mb-1 group-hover:text-secondary transition-colors duration-300 line-clamp-2">
             {post.title}
           </h3>
           <p className="text-white/80 text-xs mb-3 line-clamp-2">
@@ -258,7 +258,7 @@ const Blog = () => {
   if (loading) {
     return (
       <div className="min-h-screen pt-28 px-4 bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-800"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -269,7 +269,7 @@ const Blog = () => {
         <div className="text-red-500 text-xl mb-4">❌ {error}</div>
         <button 
           onClick={() => window.location.reload()} 
-          className="px-4 py-2 bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 transition-colors"
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
         >
           Reintentar
         </button>
@@ -280,7 +280,7 @@ const Blog = () => {
   return (
     <div className="min-h-screen pt-28 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-emerald-900">Nuestro Blog</h1>
+        <h1 className="text-4xl font-bold text-center mb-8 text-primary">Nuestro Blog</h1>
         <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
           Mantente al día con nuestros últimos artículos, consejos de jardinería y proyectos destacados.
         </p>

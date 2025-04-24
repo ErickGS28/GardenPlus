@@ -4,6 +4,7 @@ import Footer from './components/Footer';
 import Menu from './components/Menu';
 import WhatsAppButton from './components/WhatsAppButton';
 import { Toaster } from 'react-hot-toast';
+import PrivateRoute from './components/PrivateRoute';
 
 // Lazy load pages
 const Home = lazy(() => import('./pages/public/Home'));
@@ -16,7 +17,7 @@ const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
 // Fallback loading component
 const PageLoader = () => (
   <div className="flex justify-center items-center min-h-screen">
-    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-[#1b676b] border-solid"></div>
+    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-primary border-solid"></div>
   </div>
 );
 
@@ -66,7 +67,14 @@ const App = () => {
               <Route path="/blog" element={<Blog />} />
               <Route path="/about" element={<About />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route 
+                path="/dashboard" 
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                } 
+              />
             </Routes>
           </Suspense>
           <Footer />

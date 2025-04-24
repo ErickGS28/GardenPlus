@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 /* index.css */
 html, body {
@@ -5,10 +6,6 @@ html, body {
     padding: 0;
     overflow-x: hidden; /* Evitar scroll horizontal en toda la aplicación */
 }
-
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
-
 
 @theme {
     --color-primary: oklch(0.47 0.0712 200.23);

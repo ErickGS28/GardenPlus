@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const WhatsAppButton = ({ phoneNumber }) => {
   const [currentMessage, setCurrentMessage] = useState('');
-  const [animationState, setAnimationState] = useState('visible'); // 'visible', 'hiding', 'hidden', 'showing'
+  const [fadeState, setFadeState] = useState('in');
+  const location = useLocation();
+  
+  // No mostrar en el dashboard o login
+  if (location.pathname === '/dashboard' || location.pathname === '/login') {
+    return null;
+  }
   
   const messages = [
     '\u00a1Cont\u00e1ctanos ahora!',
@@ -13,41 +20,20 @@ const WhatsAppButton = ({ phoneNumber }) => {
   ];
 
   useEffect(() => {
-    let currentIndex = 0;
-    setCurrentMessage(messages[currentIndex]);
+    let messageIndex = 0;
+    setCurrentMessage(messages[0]);
     
-    // Ciclo de animación: visible (1.5s) -> hiding (0.5s) -> hidden (0.2s) -> showing (0.5s) -> visible
-    // Duración total del ciclo: 2.7 segundos
-    
-    const animationCycle = () => {
-      // Fase 1: Mensaje visible por 1.5 segundos
-      setAnimationState('visible');
+    const interval = setInterval(() => {
+      // Hacer fade out
+      setFadeState('out');
       
+      // Después de 600ms, cambiar el mensaje y hacer fade in
       setTimeout(() => {
-        // Fase 2: Ocultar mensaje (0.5 segundos de transición)
-        setAnimationState('hiding');
-        
-        setTimeout(() => {
-          // Fase 3: Mensaje oculto, cambiar al siguiente (0.2 segundos)
-          setAnimationState('hidden');
-          currentIndex = (currentIndex + 1) % messages.length;
-          setCurrentMessage(messages[currentIndex]);
-          
-          setTimeout(() => {
-            // Fase 4: Mostrar nuevo mensaje (0.5 segundos de transición)
-            setAnimationState('showing');
-            
-            // Volver al inicio del ciclo
-          }, 200);
-        }, 500);
-      }, 1500);
-    };
-    
-    // Iniciar el primer ciclo
-    animationCycle();
-    
-    // Configurar intervalo para ciclos subsecuentes (2.7 segundos por ciclo)
-    const interval = setInterval(animationCycle, 2700);
+        messageIndex = (messageIndex + 1) % messages.length;
+        setCurrentMessage(messages[messageIndex]);
+        setFadeState('in');
+      }, 600);
+    }, 5000); // Cambiar mensaje cada 5 segundos
     
     return () => clearInterval(interval);
   }, []);
@@ -57,34 +43,15 @@ const WhatsAppButton = ({ phoneNumber }) => {
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
 
-  // Determinar las clases de CSS según el estado de animación
-  const getAnimationClasses = () => {
-    switch (animationState) {
-      case 'visible':
-        return 'opacity-100 scale-100';
-      case 'hiding':
-        return 'opacity-0 scale-95';
-      case 'hidden':
-        return 'opacity-0 scale-90';
-      case 'showing':
-        return 'opacity-100 scale-100';
-      default:
-        return 'opacity-100 scale-100';
-    }
-  };
-
   return (
-    <div 
-      className="fixed right-6 bottom-6 z-50 flex items-center gap-3"
-    >
+    <div className="fixed right-6 bottom-6 z-50 flex items-center gap-3">
       <div 
-        className={`
-          bg-white text-garden-teal px-4 py-2 rounded-full shadow-lg font-medium
-          transform transition-all duration-300 origin-right
-          flex items-center whitespace-nowrap
-          ${getAnimationClasses()}
-        `}
-        data-component-name="WhatsAppButton"
+        style={{
+          transition: 'opacity 0.6s ease, transform 0.6s ease',
+          opacity: fadeState === 'in' ? 1 : 0,
+          transform: fadeState === 'in' ? 'translateY(0)' : 'translateY(10px)'
+        }}
+        className="bg-white text-garden-teal px-4 py-2 rounded-full shadow-lg font-medium flex items-center whitespace-nowrap"
       >
         {currentMessage}
       </div>

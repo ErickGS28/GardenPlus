@@ -13,6 +13,7 @@ import banner3 from '../assets/Banner3.jpg';
 import banner4 from '../assets/Banner4.webp';
 import banner6 from '../assets/Banner6.png';
 import banner7 from '../assets/Banner7.webp';
+import banner8 from '../assets/Banner8.webp';
 
 const Banner = memo(() => {
   const slides = [
@@ -47,6 +48,11 @@ const Banner = memo(() => {
       image: banner7,
       title: 'Terrazas y Roof Gardens',
       subtitle: 'Espacios elevados con diseño y funcionalidad'
+    },
+    {
+      image: banner8,
+      title: 'Soluciones de Construcción Personalizadas',
+      subtitle: 'Construyendo tu visión con precisión y calidad'
     }
   ];
 

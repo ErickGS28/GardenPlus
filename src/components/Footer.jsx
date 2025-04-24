@@ -44,7 +44,6 @@ const Footer = () => {
               <li><p className="mb-2">Av. Emiliano Zapata 11, Miguel Hidalgo</p></li>
               <li><p className="mb-2">Jiutepec, Mor. CP. 62556</p></li>
               <li><p className="mb-2">Teléfono: +52 1 81 2541 0048</p></li>
-              <li><p className="mb-2">Email: info@gardenplus.com</p></li>
             </ul>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { login, isAuthenticated } from '../../services/config/api';
 import { Loader } from 'lucide-react';
 
@@ -12,6 +12,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Obtener la ruta desde donde vino el usuario (si existe)
+  const from = location.state?.from?.pathname || '/dashboard';
 
   useEffect(() => {
     // Check if user is already authenticated
@@ -19,7 +23,8 @@ const Login = () => {
       try {
         const authenticated = await isAuthenticated();
         if (authenticated) {
-          navigate('/dashboard');
+          // Si ya está autenticado, redirigir a la página de destino
+          navigate(from);
         }
       } catch (error) {
         console.error('Authentication check failed:', error);
@@ -29,7 +34,7 @@ const Login = () => {
     };
 
     checkAuth();
-  }, [navigate]);
+  }, [navigate, from]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,8 +53,8 @@ const Login = () => {
       const response = await login(credentials.email, credentials.password);
       
       if (response && response.access_token) {
-        // Redirect to dashboard on successful login
-        navigate('/dashboard');
+        // Redirigir al usuario a la página desde donde vino o al dashboard
+        navigate(from);
       } else {
         throw new Error('No se recibió un token válido');
       }
@@ -85,6 +90,12 @@ const Login = () => {
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
+          </div>
+        )}
+        
+        {location.state?.from && (
+          <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded mb-4">
+            Inicia sesión para acceder a la página solicitada
           </div>
         )}
 

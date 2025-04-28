@@ -221,8 +221,7 @@ const PostForm = ({
             <div className="mt-1 p-2 bg-blue-50 text-blue-700 rounded border border-blue-200">
               <p className="font-medium">Para TikTok:</p>
               <ul className="list-disc pl-5 mt-1">
-                <li>Pega aquí el código de iframe completo que proporciona TikTok</li>
-                <li>O simplemente pega la URL del video (ej: https://www.tiktok.com/@usuario/video/123456789)</li>
+                <li>Para tiktok pega el enlace del video en vez del iframe</li>
               </ul>
             </div>
           ) : null}

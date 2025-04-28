@@ -39,6 +39,39 @@ const ServicePopover = memo(({ service, isOpen, onClose }) => {
     if (mediaItems.length <= 1) return;
     setCurrentImageIndex((prev) => (prev === 0 ? mediaItems.length - 1 : prev - 1));
   };
+
+  // Render appropriate media component
+  const renderMedia = () => {
+    if (!hasMedia) {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-gray-800">
+          <p className="text-gray-400">No hay imágenes disponibles</p>
+        </div>
+      );
+    }
+
+    const currentMedia = mediaItems[currentImageIndex];
+    const isVideo = currentMedia.type === 'video';
+
+    if (isVideo) {
+      return (
+        <video 
+          src={currentMedia.url} 
+          className="w-full h-full object-cover"
+          controls
+          autoPlay
+        />
+      );
+    } else {
+      return (
+        <img 
+          src={currentMedia.url} 
+          alt={service.name}
+          className="w-full h-full object-cover"
+        />
+      );
+    }
+  };
   
   return createPortal(
     <div 
@@ -52,56 +85,44 @@ const ServicePopover = memo(({ service, isOpen, onClose }) => {
       >
         {/* Media section */}
         <div className="relative bg-white w-full" style={{ height: '350px' }}>
-          {hasMedia ? (
-            <>
-              <img 
-                src={mediaItems[currentImageIndex].url} 
-                alt={service.name}
-                className="w-full h-full object-cover"
-              />
-              
-              {/* Navigation arrows */}
-              {mediaItems.length > 1 && (
-                <div className="absolute inset-0 flex items-center justify-between px-3 pointer-events-none">
-                  <button 
-                    onClick={goToPreviousImage} 
-                    className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2.5 pointer-events-auto"
-                    aria-label="Imagen anterior"
-                  >
-                    <ChevronLeft size={24} />
-                  </button>
-                  <button 
-                    onClick={goToNextImage} 
-                    className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2.5 pointer-events-auto"
-                    aria-label="Siguiente imagen"
-                  >
-                    <ChevronRight size={24} />
-                  </button>
-                </div>
-              )}
-              
-              {/* Indicators */}
-              {mediaItems.length > 1 && (
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                  <div className="flex space-x-2 bg-black/50 rounded-full px-3 py-1.5">
-                    {mediaItems.map((_, idx) => (
-                      <button
-                        key={`indicator-${idx}`}
-                        className={`w-2.5 h-2.5 rounded-full ${idx === currentImageIndex ? 'bg-white' : 'bg-white/40'}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCurrentImageIndex(idx);
-                        }}
-                        aria-label={`Ver imagen ${idx + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-800">
-              <p className="text-gray-400">No hay imágenes disponibles</p>
+          {renderMedia()}
+          
+          {/* Navigation arrows */}
+          {mediaItems.length > 1 && (
+            <div className="absolute inset-0 flex items-center justify-between px-3 pointer-events-none">
+              <button 
+                onClick={goToPreviousImage} 
+                className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2.5 pointer-events-auto"
+                aria-label="Imagen anterior"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button 
+                onClick={goToNextImage} 
+                className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2.5 pointer-events-auto"
+                aria-label="Siguiente imagen"
+              >
+                <ChevronRight size={24} />
+              </button>
+            </div>
+          )}
+          
+          {/* Indicators */}
+          {mediaItems.length > 1 && (
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+              <div className="flex space-x-2 bg-black/50 rounded-full px-3 py-1.5">
+                {mediaItems.map((_, idx) => (
+                  <button
+                    key={`indicator-${idx}`}
+                    className={`w-2.5 h-2.5 rounded-full ${idx === currentImageIndex ? 'bg-white' : 'bg-white/40'}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex(idx);
+                    }}
+                    aria-label={`Ver imagen ${idx + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           )}
           
@@ -139,8 +160,11 @@ const ServicePopover = memo(({ service, isOpen, onClose }) => {
 const ServiceCard = memo(({ service, onClick }) => {
   // Get first media or use fallback
   const firstMedia = service.multimedia && service.multimedia.length > 0 
-    ? service.multimedia[0].url 
-    : 'https://placehold.co/600x400?text=Servicio';
+    ? service.multimedia[0] 
+    : null;
+  
+  const fallbackUrl = 'https://placehold.co/600x400?text=Servicio';
+  const isVideo = firstMedia && firstMedia.type === 'video';
   
   return (
     <div 
@@ -148,11 +172,22 @@ const ServiceCard = memo(({ service, onClick }) => {
       onClick={onClick}
     >
       <div className="aspect-video overflow-hidden h-32 sm:h-36 lg:h-32 xl:h-36 flex-shrink-0 service-card-image">
-        <img 
-          src={firstMedia} 
-          alt={service.name} 
-          className="w-full h-full object-cover"
-        />
+        {isVideo ? (
+          <video 
+            src={firstMedia.url} 
+            className="w-full h-full object-cover"
+            muted
+            autoPlay={false}
+            loop
+            playsInline
+          />
+        ) : (
+          <img 
+            src={firstMedia ? firstMedia.url : fallbackUrl} 
+            alt={service.name} 
+            className="w-full h-full object-cover"
+          />
+        )}
       </div>
       
       <div className="p-3 flex-grow flex flex-col service-card-content">

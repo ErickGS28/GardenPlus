@@ -3,6 +3,7 @@ import { getPosts } from '../../services/config/api';
 import { Heart, MessageCircle, Share2, Play, Eye, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import '../../Blog.css'; // Importar desde la ubicación correcta
+import TikTokEmbed from '../../components/TikTokEmbed';
 
 // Importar los iconos de redes sociales
 import instagramIcon from '../../assets/smIcons/instagram.png';
@@ -61,6 +62,7 @@ const PostPopover = ({ post, onClose }) => {
   if (!post) return null;
 
   const [iframeKey, setIframeKey] = useState(Date.now());
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   useEffect(() => {
     // Bloquear el scroll del body cuando el popover está abierto
@@ -68,32 +70,119 @@ const PostPopover = ({ post, onClose }) => {
     
     // Generar una nueva key cada vez que se abre el popover
     setIframeKey(Date.now());
+    setIframeLoaded(false);
     
     // Si hay un iframe con un script de Twitter, necesitamos cargarlo
-    if (getIframeContent()) {
+    if (getIframeContent() && !isTikTokPost()) {
       // Limpiar cualquier elemento de script previo para evitar duplicados
       const existingScripts = document.querySelectorAll('script[data-twitter-script]');
       existingScripts.forEach(script => script.remove());
       
-      // Crear y añadir el nuevo script de Twitter
-      const script = document.createElement('script');
-      script.src = 'https://platform.twitter.com/widgets.js';
-      script.charset = 'utf-8';
-      script.async = true;
-      script.setAttribute('data-twitter-script', 'true');
-      script.onload = () => {
-        if (window.twttr) {
-          window.twttr.widgets.load();
-        }
-      };
-      document.body.appendChild(script);
+      // Crear y añadir el nuevo script de Twitter para tweets
+      if (post.content?.includes('twitter') || post.iframe?.includes('twitter')) {
+        const script = document.createElement('script');
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.charset = 'utf-8';
+        script.async = true;
+        script.setAttribute('data-twitter-script', 'true');
+        script.onload = () => {
+          if (window.twttr) {
+            window.twttr.widgets.load();
+            setIframeLoaded(true);
+          }
+        };
+        document.body.appendChild(script);
+      } 
+      // Para Instagram y Facebook
+      else if (post.content?.includes('instagram') || post.iframe?.includes('instagram') ||
+               post.content?.includes('facebook') || post.iframe?.includes('facebook')) {
+        const script = document.createElement('script');
+        script.src = 'https://www.instagram.com/embed.js';
+        script.async = true;
+        script.defer = true;
+        script.setAttribute('data-social-script', 'true');
+        script.onload = () => {
+          if (window.instgrm) {
+            window.instgrm.Embeds.process();
+            setIframeLoaded(true);
+          }
+        };
+        document.body.appendChild(script);
+      } else {
+        // Para otros iframes, marcar como cargado
+        setIframeLoaded(true);
+      }
     }
 
     // Limpiar cuando se cierre el popover
     return () => {
       document.body.style.overflow = '';
+      
+      // Eliminar scripts añadidos
+      const scripts = document.querySelectorAll('script[data-twitter-script], script[data-social-script]');
+      scripts.forEach(script => script.remove());
     };
   }, [post]);
+
+  const isTikTokPost = () => {
+    return post.type === 'tiktok' || 
+           (post.previewUrl && post.previewUrl.includes('tiktok.com')) ||
+           (post.iframe && post.iframe.includes('tiktok.com')) ||
+           (post.content && post.content.includes('tiktok.com'));
+  };
+
+  const getTikTokUrl = () => {
+    // Array para almacenar posibles URLs encontradas
+    let possibleUrls = [];
+    
+    // 1. Intentar extraer de iframe primero (mayor prioridad)
+    if (post.iframe) {
+      // Buscar en atributo cite
+      const citeMatch = post.iframe.match(/cite="([^"]+)"/);
+      if (citeMatch && citeMatch[1] && citeMatch[1].includes('tiktok.com')) {
+        possibleUrls.push(citeMatch[1]);
+      }
+      
+      // Buscar cualquier URL de TikTok en el iframe
+      const iframeUrlMatch = post.iframe.match(/(https:\/\/[^"'\s]*tiktok\.com[^"'\s]*)/i);
+      if (iframeUrlMatch && iframeUrlMatch[1]) {
+        possibleUrls.push(iframeUrlMatch[1]);
+      }
+    }
+    
+    // 2. Buscar URL en el contenido (segunda prioridad)
+    if (post.content) {
+      // Patrón mejorado para capturar URLs de TikTok
+      const urlMatches = post.content.match(/(https:\/\/(?:www\.|vm\.)?tiktok\.com(?:\/[@a-zA-Z0-9_.]+)?\/video\/[0-9]+[^\s'"]*)/gi);
+      if (urlMatches) {
+        possibleUrls = [...possibleUrls, ...urlMatches];
+      }
+    }
+    
+    // 3. Verificar previewUrl (última prioridad)
+    if (post.previewUrl && post.previewUrl.includes('tiktok.com')) {
+      possibleUrls.push(post.previewUrl);
+    }
+    
+    // Buscar una URL que parezca ser de un video de TikTok
+    // Preferimos URLs que tengan el formato @usuario/video/id
+    const videoUrlPattern = /tiktok\.com\/@[\w.-]+\/video\/\d+/i;
+    const bestMatch = possibleUrls.find(url => videoUrlPattern.test(url));
+    
+    if (bestMatch) {
+      console.log('URL de TikTok encontrada (Blog):', bestMatch);
+      return bestMatch;
+    }
+    
+    // Si no encontramos un formato ideal, devolver la primera URL encontrada
+    if (possibleUrls.length > 0) {
+      console.log('URL de TikTok alternativa (Blog):', possibleUrls[0]);
+      return possibleUrls[0];
+    }
+    
+    console.log('No se encontró URL de TikTok');
+    return null;
+  };
 
   const getIframeContent = () => {
     if (post.iframe) return post.iframe;
@@ -135,13 +224,25 @@ const PostPopover = ({ post, onClose }) => {
         <div className="p-4 sm:p-6 overflow-y-auto">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">{post.title}</h2>
           
-          {getIframeContent() ? (
+          {/* Renderizado condicional basado en el tipo de contenido */}
+          {isTikTokPost() ? (
+            <div className="w-full flex justify-center mb-6">
+              <TikTokEmbed videoUrl={getTikTokUrl()} maxWidth={500} minWidth={300} />
+            </div>
+          ) : getIframeContent() ? (
             <div className="iframe-wrapper mb-6">
               <div 
                 className="iframe-container" 
                 data-key={iframeKey}
                 dangerouslySetInnerHTML={{ __html: getIframeContent() }}
               />
+              {!iframeLoaded && (
+                <div className="w-full p-4 text-center my-4">
+                  <div className="animate-pulse bg-gray-200 h-48 rounded flex items-center justify-center">
+                    <p className="text-gray-500">Cargando contenido...</p>
+                  </div>
+                </div>
+              )}
             </div>
           ) : post.previewUrl ? (
             <div className="w-full flex justify-center mb-6">
@@ -156,7 +257,7 @@ const PostPopover = ({ post, onClose }) => {
           
           <div className="prose prose-sm max-w-none">
             <p className="text-gray-600 whitespace-pre-line">
-              {post.content && getIframeContent() 
+              {post.content && getIframeContent() && !isTikTokPost()
                 ? post.content.replace(getIframeContent(), '') 
                 : post.content}
             </p>
@@ -187,6 +288,13 @@ const SocialCard = ({ post, className = '', onClick }) => {
   };
   
   const network = determineNetwork();
+  
+  // Determinar si es un post de TikTok para renderizar diferente
+  const isTikTokPost = () => {
+    return network === 'tiktok' || 
+           (post.previewUrl && post.previewUrl.includes('tiktok.com')) ||
+           (post.iframe && post.iframe.includes('tiktok.com'));
+  };
 
   return (
     <div 
@@ -194,12 +302,20 @@ const SocialCard = ({ post, className = '', onClick }) => {
       onClick={onClick}
     >
       <div className="absolute inset-0">
-        {post.previewUrl && (
+        {post.previewUrl && !isTikTokPost() && (
           <img 
             src={post.previewUrl} 
             alt={post.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
+        )}
+        {isTikTokPost() && (
+          <div className="flex h-full w-full items-center justify-center bg-gray-200">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 z-10">
+              <Play className="w-10 h-10 text-white mb-2" />
+              <span className="text-white text-sm">TikTok Video</span>
+            </div>
+          </div>
         )}
         <div className={`absolute inset-0 ${!post.previewUrl ? 'bg-gradient-to-br from-primary to-primary/70' : 'bg-gradient-to-t from-black/80 via-black/50 to-black/20'}`} />
       </div>

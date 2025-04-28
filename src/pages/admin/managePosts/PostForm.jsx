@@ -215,9 +215,18 @@ const PostForm = ({
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           placeholder="Pega el código iframe aquí si es necesario..."
         />
-        <p className="mt-1 text-xs text-gray-500">
-          Puedes incluir un iframe de YouTube, Instagram, etc.
-        </p>
+        <div className="mt-1 text-xs text-gray-500">
+          <p>Puedes incluir un iframe de YouTube, Instagram, Facebook, etc.</p>
+          {formData.type === 'tiktok' ? (
+            <div className="mt-1 p-2 bg-blue-50 text-blue-700 rounded border border-blue-200">
+              <p className="font-medium">Para TikTok:</p>
+              <ul className="list-disc pl-5 mt-1">
+                <li>Pega aquí el código de iframe completo que proporciona TikTok</li>
+                <li>O simplemente pega la URL del video (ej: https://www.tiktok.com/@usuario/video/123456789)</li>
+              </ul>
+            </div>
+          ) : null}
+        </div>
       </div>
 
       <div>
